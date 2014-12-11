@@ -1,26 +1,18 @@
-﻿#region
-
-using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-
-#endregion
+﻿using LeagueSharp.Common;
 
 namespace KaiHelper
 {
-    
     internal class Program
     {
         public static Menu Config;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Config = new Menu("KaiHelper", "KaiHelp", true);
-            WardDetector.AttachMenu(Config);
-            GankDetector.AttachMenu(Config);
             SkillBar.AttachMenu(Config);
+            GankDetector.AttachMenu(Config);
+            WardDetector.AttachMenu(Config);
             Config.AddToMainMenu();
         }
     }
-
 }

@@ -11,12 +11,77 @@ namespace KaiHelper
 {
     internal class Ward
     {
+        private const float Scale = 0.7f;
+        private Render.Circle _circle;
+        private Render.Sprite _minimapSprite;
+        private Render.Text _timerText;
+
+        public Ward(string skinName, int startTime, Obj_AI_Base objAiBase)
+        {
+            int duration;
+            WardType type;
+            GetWarInfo(skinName, out duration, out type);
+            SkinName = skinName;
+            StartTime = startTime;
+            Duration = duration;
+            EndTime = StartTime + Duration;
+            Type = type;
+            ObjAiBase = objAiBase;
+            switch (Type)
+            {
+                case WardType.Green:
+                    Color = Color.Lime;
+                    break;
+                case WardType.Pink:
+                    Color = Color.Magenta;
+                    break;
+                default:
+                    Color = Color.Red;
+                    break;
+            }
+            DrawCircle();
+        }
+
+        public Bitmap Bitmap
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case WardType.Green:
+                        return new Bitmap(LeagueSharpFolder.MiniMapFolder("ward"));
+                    case WardType.Pink:
+                        return new Bitmap(LeagueSharpFolder.MiniMapFolder("pink"));
+                    default:
+                        return new Bitmap(LeagueSharpFolder.MiniMapFolder("ward"));
+                }
+            }
+        }
+
+        private Vector2 MinimapPosition
+        {
+            get
+            {
+                return Drawing.WorldToMinimap(ObjAiBase.Position) +
+                       new Vector2(-Bitmap.Width/2*Scale, -Bitmap.Height/2*Scale);
+            }
+        }
+
+        public Color Color { get; set; }
+        public int StartTime { get; set; }
+        public int Duration { get; set; }
+        public int EndTime { get; set; }
+        public string SkinName { get; set; }
+        public WardType Type { get; set; }
+        public Obj_AI_Base ObjAiBase { get; set; }
+
         public static bool IsWard(string skinName)
         {
             int duration;
             WardType type;
             return GetWarInfo(skinName, out duration, out type);
         }
+
         public static bool GetWarInfo(string skinName, out int duration, out WardType type)
         {
             switch (skinName)
@@ -56,70 +121,11 @@ namespace KaiHelper
                 default:
                     duration = 0;
                     type = WardType.None;
-                return false;
+                    return false;
             }
             return true;
         }
-        public Ward(string skinName,int startTime,Obj_AI_Base objAiBase)
-        {
-            int duration;
-            WardType type;
-            GetWarInfo(skinName, out duration,out type);
-            SkinName = skinName;
-            StartTime = startTime;
-            Duration = duration;
-            EndTime = StartTime + Duration;
-            Type = type;
-            ObjAiBase = objAiBase;
-            switch (Type)
-            {
-                case WardType.Green:
-                    Color= Color.Lime;
-                    break;
-                case WardType.Pink:
-                    Color= Color.Magenta;
-                    break;
-                default:
-                    Color= Color.Red;
-                    break;
-            }
-            DrawCircle();
-        }
 
-        public Bitmap Bitmap
-        {
-            get
-            {
-                switch (Type)
-                {
-                    case WardType.Green:
-                        return new Bitmap(LeagueSharpFolder.MiniMapFolder("ward"));
-                    case WardType.Pink:
-                        return new Bitmap(LeagueSharpFolder.MiniMapFolder("pink"));
-                    default:
-                        return new Bitmap(LeagueSharpFolder.MiniMapFolder("ward"));
-                }
-            }
-        }
-        private Vector2 MinimapPosition
-        {
-            get
-            {
-                return Drawing.WorldToMinimap(ObjAiBase.Position) + new Vector2(-Bitmap.Width / 2 * Scale, -Bitmap.Height / 2 * Scale);
-            }
-        }
-        public Color Color{ get; set; }
-        public int StartTime { get; set; }
-        public int Duration { get; set; }
-        public int EndTime { get; set; }
-        public string SkinName { get; set; }
-        public WardType Type { get; set; }
-        public Obj_AI_Base ObjAiBase { get; set; }
-        private Render.Circle _circle;
-        private Render.Text _timerText;
-        private Render.Sprite _minimapSprite;
-        private const float Scale = 0.7f;
-        
         public void DrawCircle()
         {
             _circle = new Render.Circle(ObjAiBase.Position, 100, Color, 5, true);
@@ -148,9 +154,10 @@ namespace KaiHelper
                     WardDetector.MenuWard.Item("Active").GetValue<bool>() &&
                     Render.OnScreen(Drawing.WorldToScreen(ObjAiBase.Position));
             _timerText.TextUpdate =
-                () => Utils.FormatTime((EndTime - Environment.TickCount) / 1000f);
+                () => Utils.FormatTime((EndTime - Environment.TickCount)/1000f);
             _timerText.Add(2);
         }
+
         public bool RemoveCircle()
         {
             _circle.Remove();
@@ -165,19 +172,22 @@ namespace KaiHelper
             return true;
         }
     }
+
     public static class WardDetector
     {
         private static readonly List<Ward> DetectedWards = new List<Ward>();
         public static Menu MenuWard;
+
         static WardDetector()
         {
             GameObject.OnCreate += Game_OnCreate;
             Game.OnGameUpdate += Game_OnGameUpdate;
-            foreach (var obj in ObjectManager.Get<GameObject>().Where(o => o is Obj_AI_Base))
+            foreach (GameObject obj in ObjectManager.Get<GameObject>().Where(o => o is Obj_AI_Base))
             {
                 Game_OnCreate(obj, null);
             }
         }
+
         public static void AttachMenu(Menu menu)
         {
             MenuWard = menu;
@@ -188,14 +198,15 @@ namespace KaiHelper
         {
             return MenuWard.Item("Active").GetValue<bool>();
         }
+
         private static void Game_OnCreate(GameObject sender, EventArgs args)
         {
             var @base = sender as Obj_AI_Base;
             if (@base == null) return;
-            var objAiBase = @base;
+            Obj_AI_Base objAiBase = @base;
             if (objAiBase.IsAlly) return;
             if (!Ward.IsWard(objAiBase.SkinName)) return;
-            var startTime = Environment.TickCount - (int) ((objAiBase.MaxMana - objAiBase.Mana)*1000);
+            int startTime = Environment.TickCount - (int) ((objAiBase.MaxMana - objAiBase.Mana)*1000);
             DetectedWards.Add(new Ward(objAiBase.SkinName, startTime, objAiBase));
         }
 
@@ -204,6 +215,7 @@ namespace KaiHelper
             DetectedWards.RemoveAll(w => w.ObjAiBase.IsDead && w.RemoveCircle());
         }
     }
+
     internal enum WardType
     {
         None,

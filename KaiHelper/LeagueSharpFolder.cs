@@ -1,27 +1,41 @@
 ﻿using System;
-using LeagueSharp.Common;
+using System.IO;
+using System.Net;
 
 namespace KaiHelper
 {
     public static class LeagueSharpFolder
     {
-        public static string MainFolder { get { return string.Format("{0}\\LeagueSharp\\Repositories\\4A862CBB\\trunk\\KaiHelper", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)); } }
+        public static string MainFolder
+        {
+            get { return string.Format("{0}\\LeagueSharp\\Repositories\\4A862CBB\\trunk\\KaiHelper\\Images", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)); } 
+        }
 
         public static string SummonerSpellFolder(string fileName)
         {
-            return string.Format(@"{0}\Images\AlternateSS\{1}.png", MainFolder, fileName);
+            return string.Format(@"{0}\AlternateSS\{1}.png", MainFolder, fileName);
         }
+
         public static string SpellFolder(string fileName)
         {
-            return string.Format(@"{0}\Images\SkillsSmall\{1}.png", MainFolder, fileName);
+            return string.Format(@"{0}\SkillsSmall\{1}.png", MainFolder, fileName);
         }
+
         public static string MiniMapFolder(string fileName)
         {
-            return string.Format(@"{0}\Images\Minimap\{1}.png", MainFolder, fileName);
+            return string.Format(@"{0}\Minimap\{1}.png", MainFolder, fileName);
         }
+
         public static string HudFolder(string fileName)
         {
-            return string.Format(@"{0}\Images\HUD\{1}.png", MainFolder, fileName);
+            return string.Format(@"{0}\HUD\{1}.png", MainFolder, fileName);
+        }
+
+        public static Stream Download(string url)
+        {
+            WebRequest req = WebRequest.Create(url);
+            WebResponse response = req.GetResponse();
+            return response.GetResponseStream();
         }
     }
 }
