@@ -27,27 +27,33 @@ namespace KaiHelper
         static SkillBar()
         {
             Sprite = new Sprite(Drawing.Direct3DDevice);
-                HudTexture = Texture.FromMemory(
-                    Drawing.Direct3DDevice,
-                    (byte[])new ImageConverter().ConvertTo(new Bitmap(LeagueSharpFolder.HudFolder("main")), typeof(byte[])), 127, 41, 0,
-                    Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
-                FrameLevelTexture = Texture.FromMemory(
-                    Drawing.Direct3DDevice,
-                    (byte[])new ImageConverter().ConvertTo(new Bitmap(LeagueSharpFolder.HudFolder("spell_level")), typeof(byte[])), 2, 3, 0,
-                    Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
-                ButtonRedTexture = Texture.FromMemory(
-                    Drawing.Direct3DDevice,
-                    (byte[])new ImageConverter().ConvertTo(new Bitmap(LeagueSharpFolder.HudFolder("button_red")), typeof(byte[])), 14,14, 0,
-                    Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
-                SmallText = new Font(
-                    Drawing.Direct3DDevice,
-                    new FontDescription
-                    {
-                        FaceName = "Calibri",
-                        Height = 13,
-                        OutputPrecision = FontPrecision.Default,
-                        Quality = FontQuality.Default,
-                    });
+            HudTexture = Texture.FromMemory(
+                Drawing.Direct3DDevice,
+                (byte[])
+                    new ImageConverter().ConvertTo(new Bitmap(LeagueSharpFolder.HudFolder("main")), typeof (byte[])),
+                127, 41, 0,
+                Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
+            FrameLevelTexture = Texture.FromMemory(
+                Drawing.Direct3DDevice,
+                (byte[])
+                    new ImageConverter().ConvertTo(new Bitmap(LeagueSharpFolder.HudFolder("spell_level")),
+                        typeof (byte[])), 2, 3, 0,
+                Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
+            ButtonRedTexture = Texture.FromMemory(
+                Drawing.Direct3DDevice,
+                (byte[])
+                    new ImageConverter().ConvertTo(new Bitmap(LeagueSharpFolder.HudFolder("button_red")),
+                        typeof (byte[])), 14, 14, 0,
+                Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
+            SmallText = new Font(
+                Drawing.Direct3DDevice,
+                new FontDescription
+                {
+                    FaceName = "Calibri",
+                    Height = 13,
+                    OutputPrecision = FontPrecision.Default,
+                    Quality = FontQuality.Default,
+                });
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
             AppDomain.CurrentDomain.DomainUnload += CurrentDomainOnDomainUnload;
             AppDomain.CurrentDomain.ProcessExit += CurrentDomainOnDomainUnload;

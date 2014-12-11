@@ -1,10 +1,11 @@
-﻿using LeagueSharp.Common;
+﻿using System;
+using LeagueSharp.Common;
 
 namespace KaiHelper
 {
     public static class LeagueSharpFolder
     {
-        public static string MainFolder { get { return Config.LeagueSharpDirectory; } }
+        public static string MainFolder { get { return string.Format("{0}\\LeagueSharp\\Repositories\\4A862CBB\\trunk\\KaiHelper", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)); } }
 
         public static string SummonerSpellFolder(string fileName)
         {
