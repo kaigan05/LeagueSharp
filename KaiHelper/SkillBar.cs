@@ -64,7 +64,6 @@ namespace KaiHelper
 
         private static void Game_OnGameLoad(EventArgs args)
         {
-            Console.WriteLine("INITTTTTTTTT DOWLOAD");
             foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
             {
                 foreach (SpellSlot summonerSpellSlot in SummonerSpellSlots)
