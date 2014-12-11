@@ -204,7 +204,7 @@ namespace KaiHelper
             var @base = sender as Obj_AI_Base;
             if (@base == null) return;
             Obj_AI_Base objAiBase = @base;
-            if (objAiBase.IsAlly) return;
+            //if (objAiBase.IsAlly) return;
             if (!Ward.IsWard(objAiBase.SkinName)) return;
             int startTime = Environment.TickCount - (int) ((objAiBase.MaxMana - objAiBase.Mana)*1000);
             DetectedWards.Add(new Ward(objAiBase.SkinName, startTime, objAiBase));

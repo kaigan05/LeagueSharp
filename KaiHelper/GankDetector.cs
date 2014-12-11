@@ -32,7 +32,7 @@ namespace KaiHelper
                 {
                     Enemies.Add(hero, new Time());
                 }
-                Game.PrintChat("<font color = \"#FD00FF\">KaiHelper</font> by <font color = \"#00FF2B\">kaigan05</font>");
+                Game.PrintChat("<font color = \"#FD00FF\">KaiHelper</font> by <font color = \"#00FF2B\">kaigan</font>");
                 Game.PrintChat(
                     "<font color = \"#0092FF\">Feel free to donate via Paypal to:</font> <font color = \"#F0FF00\">ntanphat2406@gmail.com</font>");
                 Game.PrintChat("KaiHelper - Loaded");
@@ -108,6 +108,7 @@ namespace KaiHelper
                                 .Send();
                             break;
                     }
+                    Game.PrintChat("<font color = \"#FF0000\">Gank: </font>{0}", hero.ChampionName);
                     Utility.DelayAction.Add(visibleTime*1000, () => { Enemies[hero].Pinged = false; });
                 }
             }
