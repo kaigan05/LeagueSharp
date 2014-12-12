@@ -12,6 +12,7 @@ namespace KaiHelper
             SkillBar.AttachMenu(Config);
             GankDetector.AttachMenu(Config);
             WardDetector.AttachMenu(Config);
+            HealthTurret.AttachMenu(Config);
             Config.AddToMainMenu();
         }
     }

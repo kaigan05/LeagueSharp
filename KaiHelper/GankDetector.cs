@@ -48,7 +48,7 @@ namespace KaiHelper
             MenuGank.AddItem(new MenuItem("TriggerRange", "Trigger Range").SetValue(new Slider(3000, 1, 3000)));
             MenuGank.AddItem(new MenuItem("CircalRange", "Circal Range").SetValue(new Slider(2500, 1, 3000)));
             MenuGank.AddItem(new MenuItem("Ping", "Ping").SetValue(new StringList(new[] {"Local Ping", "Server Ping"})));
-            MenuGank.AddItem(new MenuItem("LagFree", "Lagg Free").SetValue(false));
+            MenuGank.AddItem(new MenuItem("Fill", "Fill").SetValue(true));
             MenuGank.AddItem(new MenuItem("Active", "Active").SetValue(true));
         }
 
@@ -69,8 +69,8 @@ namespace KaiHelper
                                 hero.Distance(ObjectManager.Player.Position) <= triggerGank))
             {
                 Utility.DrawCircle(hero.Position, circalGank, Color.Red, 20);
-                if(!MenuGank.Item("LagFree").GetValue<bool>())
-                    Utility.DrawCircle(hero.Position, circalGank, Color.FromArgb(25, Color.Red), -142857);
+                if (MenuGank.Item("Fill").GetValue<bool>())
+                    Utility.DrawCircle(hero.Position, circalGank, Color.FromArgb(15, Color.Red), -142857);
             }
         }
 
@@ -110,8 +110,8 @@ namespace KaiHelper
                                 .Send();
                             break;
                     }
-                    Game.PrintChat("<font color = \"#FF0000\">Gank: </font>{0}", hero.ChampionName);
-                    Utility.DelayAction.Add(visibleTime*1000, () => { Enemies[hero].Pinged = false; });
+                    Game.PrintChat("<font color = \"#FF0000\">Warning: </font>{0}", hero.ChampionName);
+                    Utility.DelayAction.Add(visibleTime*1000+500, () => { Enemies[hero].Pinged = false; });
                 }
             }
         }

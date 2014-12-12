@@ -201,6 +201,7 @@ namespace KaiHelper
 
         private static void Game_OnCreate(GameObject sender, EventArgs args)
         {
+            //if (!IsActive()) return; //can not unload?
             var @base = sender as Obj_AI_Base;
             if (@base == null) return;
             Obj_AI_Base objAiBase = @base;
@@ -212,6 +213,7 @@ namespace KaiHelper
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
+            if (!IsActive()) return;
             DetectedWards.RemoveAll(w => w.ObjAiBase.IsDead && w.RemoveCircle());
         }
     }
