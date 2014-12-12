@@ -40,12 +40,12 @@ namespace KaiHelper
             MenuHealthTurret = menu.AddSubMenu(new Menu("Health", "Health"));
             MenuHealthTurret.AddItem(
                 new MenuItem("TurretHealth", "Turret Health").SetValue(new StringList(new[] {"Percent", "Health "})));
-            MenuHealthTurret.AddItem(new MenuItem("Active", "Active").SetValue(true));
+            MenuHealthTurret.AddItem(new MenuItem("HealthActive", "Active").SetValue(true));
         }
 
         private static bool IsActive()
         {
-            return MenuHealthTurret.Item("Active").GetValue<bool>();
+            return MenuHealthTurret.Item("HealthActive").GetValue<bool>();
         }
 
         private static void DrawTurrentHealth(EventArgs args)

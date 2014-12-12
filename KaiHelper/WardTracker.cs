@@ -191,12 +191,12 @@ namespace KaiHelper
         public static void AttachMenu(Menu menu)
         {
             MenuWard = menu;
-            MenuWard.AddItem(new MenuItem("Active", "Ward Detector")).SetValue(true);
+            MenuWard.AddItem(new MenuItem("WardActive", "Ward Detector")).SetValue(true);
         }
 
         public static bool IsActive()
         {
-            return MenuWard.Item("Active").GetValue<bool>();
+            return MenuWard.Item("WardActive").GetValue<bool>();
         }
 
         private static void Game_OnCreate(GameObject sender, EventArgs args)

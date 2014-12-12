@@ -49,7 +49,7 @@ namespace KaiHelper
             MenuGank.AddItem(new MenuItem("CircalRange", "Circal Range").SetValue(new Slider(2500, 1, 3000)));
             MenuGank.AddItem(new MenuItem("Ping", "Ping").SetValue(new StringList(new[] {"Local Ping", "Server Ping"})));
             MenuGank.AddItem(new MenuItem("Fill", "Fill").SetValue(true));
-            MenuGank.AddItem(new MenuItem("Active", "Active").SetValue(true));
+            MenuGank.AddItem(new MenuItem("GankActive", "Active").SetValue(true));
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -76,7 +76,7 @@ namespace KaiHelper
 
         public static bool IsActive()
         {
-            return MenuGank.Item("Active").GetValue<bool>();
+            return MenuGank.Item("GankActive").GetValue<bool>();
         }
 
         private static void Game_OnGameUpdate(EventArgs args)
@@ -110,7 +110,7 @@ namespace KaiHelper
                                 .Send();
                             break;
                     }
-                    Game.PrintChat("<font color = \"#FF0000\">Warning: </font>{0}", hero.ChampionName);
+                    //Game.PrintChat("<font color = \"#FF0000\">Warning: </font>{0}", hero.ChampionName);
                     Utility.DelayAction.Add(visibleTime*1000+500, () => { Enemies[hero].Pinged = false; });
                 }
             }

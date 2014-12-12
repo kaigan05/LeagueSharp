@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="GankDetector.cs" />
     <Compile Include="HealthTurret.cs" />
+    <Compile Include="JungleTimer.cs" />
     <Compile Include="LeagueSharpFolder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
