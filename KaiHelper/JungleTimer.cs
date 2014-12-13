@@ -177,8 +177,8 @@ namespace KaiHelper
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
-            if (!IsActive())
-                return;
+            //if (!IsActive())
+            //    return;
             foreach (JungleCamp jungleCamp in JungleCamps)
             {
                 if ((jungleCamp.NextRespawnTime - (int)Game.ClockTime) < 0)
@@ -213,10 +213,10 @@ namespace KaiHelper
 
         private static void Game_OnGameProcessPacket(GamePacketEventArgs args)
         {
-            if (!IsActive())
-                return;
-            try
-            {
+            //if (!IsActive())
+            //    return;
+            //try
+            //{
                 var stream = new MemoryStream(args.PacketData);
                 using (var b = new BinaryReader(stream))
                 {
@@ -233,10 +233,10 @@ namespace KaiHelper
                         pos += sizeof(int);
                     }
                 }
-            }
-            catch (EndOfStreamException)
-            {
-            }
+            //}
+            //catch (EndOfStreamException)
+            //{
+            //}
         }
 
         public class JungleCamp

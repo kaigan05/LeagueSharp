@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -55,27 +56,23 @@ namespace KaiHelper
         }
         private static void Game_OnGameLoad(EventArgs args)
         {
+            string[] filePaths = Directory.GetFiles(LeagueSharpFolder.SummonerSpellFolder(), "*.png").Select(Path.GetFileNameWithoutExtension).ToArray();
+            foreach (var filePath in filePaths.Where(filePath => !SummonerSpellTextures.ContainsKey(filePath)))
+            {
+                SummonerSpellTextures.Add(filePath, GetTexture(null, SpellSlot.Summoner2, filePath));
+            }
             foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
             {
-                foreach (SpellSlot summonerSpellSlot in SummonerSpellSlots)
-                {
-                    SpellDataInst spell = hero.SummonerSpellbook.GetSpell(summonerSpellSlot);
-                    if (!SummonerSpellTextures.ContainsKey(spell.Name))
-                    {
-                        SummonerSpellTextures.Add(spell.Name,
-                        GetTexture(hero.ChampionName, summonerSpellSlot, spell.Name));
-                    }
-                }
                 foreach (SpellSlot spellSlot in SpellSlots)
                 {
-                    SpellDataInst spell = hero.Spellbook.GetSpell(spellSlot);
                     if (!SummonerSpellTextures.ContainsKey(hero.ChampionName + "_" + spellSlot))
                     {
                         SummonerSpellTextures.Add(hero.ChampionName + "_" + spellSlot,
-                        GetTexture(hero.ChampionName, spellSlot, spell.Name));
+                        GetTexture(hero.ChampionName, spellSlot));
                     }
                 }
             }
+            
             Drawing.OnDraw += Drawing_OnDraw;
         }
         public static void AttachMenu(Menu menu)
@@ -84,10 +81,10 @@ namespace KaiHelper
             MenuSkillBar.AddItem(new MenuItem("OnAllies", "Active On Allies").SetValue(false));
             MenuSkillBar.AddItem(new MenuItem("OnEnemies", "Active On Enemies").SetValue(true));
         }
-        private static Texture GetTexture(string heroName, SpellSlot spellSlot, string name)
+        private static Texture GetTexture(string heroName, SpellSlot spellSlot, string name = null)
         {
             Bitmap bitmap;
-            if (name.Contains("summoner"))
+            if (name!=null)
             {
                 bitmap = new Bitmap(LeagueSharpFolder.SummonerSpellFolder(name));
                 return Texture.FromMemory(
@@ -101,7 +98,7 @@ namespace KaiHelper
         }
         private static void Drawing_OnDraw(EventArgs args)
         {
-            foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsValid && !hero.IsMe &&
+            foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsValid  && !hero.IsMe &&
             hero.IsHPBarRendered &&
             (hero.IsEnemy &&
             MenuSkillBar.Item("OnEnemies")

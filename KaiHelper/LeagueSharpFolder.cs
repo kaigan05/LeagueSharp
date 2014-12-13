@@ -21,8 +21,12 @@ namespace KaiHelper
             }
         }
 
-        public static string SummonerSpellFolder(string fileName)
+        public static string SummonerSpellFolder(string fileName=null)
         {
+            if (fileName == null)
+            {
+                return string.Format(@"{0}\AlternateSS\", MainFolder);
+            }
             return string.Format(@"{0}\AlternateSS\{1}.png", MainFolder, fileName);
         }
 
