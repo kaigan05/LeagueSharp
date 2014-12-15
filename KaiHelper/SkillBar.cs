@@ -79,13 +79,13 @@ namespace KaiHelper
 
         private static void DrawingOnPostReset(EventArgs args)
         {
-            SmallText.Dispose();
+            SmallText.OnResetDevice();
             Sprite.OnResetDevice();
         }
 
         private static void DrawingOnPreReset(EventArgs args)
         {
-            SmallText.Dispose();
+            SmallText.OnLostDevice();
             Sprite.OnLostDevice();
         }
         private static void Game_OnGameLoad(EventArgs args)
@@ -187,7 +187,7 @@ namespace KaiHelper
                         {
                             SmallText.DrawText(null, s, x - 5 - s.Length*5, y + 2 + 19*index,
                                 new ColorBGRA(255, 255, 255, 255));
-                            Console.WriteLine("SmallText.DrawText(null, s, x - 5 - s.Length*5, y + 2 + 19*index,new ColorBGRA(255, 255, 255, 255));");
+                            //Console.WriteLine("SmallText.DrawText(null, s, x - 5 - s.Length*5, y + 2 + 19*index,new ColorBGRA(255, 255, 255, 255));");
                         }
                         
                         Sprite.Draw(SummonerSpellTextures[summonerSpell.Name], new ColorBGRA(255, 255, 255, 255),

@@ -55,22 +55,29 @@ namespace KaiHelper
         private static void Drawing_OnDraw(EventArgs args)
         {
             if (!IsActive()) return;
-            int triggerGank = MenuGank.Item("TriggerRange").GetValue<Slider>().Value;
-            int circalGank = MenuGank.Item("CircalRange").GetValue<Slider>().Value;
-            int invisibleTime = MenuGank.Item("InvisibleTime").GetValue<Slider>().Value;
-            int visibleTime = MenuGank.Item("VisibleTime").GetValue<Slider>().Value;
-            foreach (
-                Obj_AI_Hero hero in
-                    Enemies.Select(enemy => enemy.Key)
-                        .Where(
-                            hero =>
-                                !hero.IsDead && hero.IsVisible && Enemies[hero].InvisibleTime >= invisibleTime &&
-                                Enemies[hero].VisibleTime <= visibleTime &&
-                                hero.Distance(ObjectManager.Player.Position) <= triggerGank))
+            try
             {
-                Utility.DrawCircle(hero.Position, circalGank, Color.Red, 20);
-                if (MenuGank.Item("Fill").GetValue<bool>())
-                    Utility.DrawCircle(hero.Position, circalGank, Color.FromArgb(15, Color.Red), -142857);
+                int triggerGank = MenuGank.Item("TriggerRange").GetValue<Slider>().Value;
+                int circalGank = MenuGank.Item("CircalRange").GetValue<Slider>().Value;
+                int invisibleTime = MenuGank.Item("InvisibleTime").GetValue<Slider>().Value;
+                int visibleTime = MenuGank.Item("VisibleTime").GetValue<Slider>().Value;
+                foreach (
+                    Obj_AI_Hero hero in
+                        Enemies.Select(enemy => enemy.Key)
+                            .Where(
+                                hero =>
+                                    !hero.IsDead && hero.IsVisible && Enemies[hero].InvisibleTime >= invisibleTime &&
+                                    Enemies[hero].VisibleTime <= visibleTime &&
+                                    hero.Distance(ObjectManager.Player.Position) <= triggerGank))
+                {
+                    Utility.DrawCircle(hero.Position, circalGank, Color.Red, 20);
+                    if (MenuGank.Item("Fill").GetValue<bool>())
+                        Utility.DrawCircle(hero.Position, circalGank, Color.FromArgb(15, Color.Red), -142857);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Can't OnDraw "+ex.Message);
             }
         }
 
@@ -83,6 +90,7 @@ namespace KaiHelper
         {
             if (!IsActive())
                 return;
+            try{
             int triggerGank = MenuGank.Item("TriggerRange").GetValue<Slider>().Value;
             int invisibleTime = MenuGank.Item("InvisibleTime").GetValue<Slider>().Value;
             int visibleTime = MenuGank.Item("VisibleTime").GetValue<Slider>().Value;
@@ -113,6 +121,11 @@ namespace KaiHelper
                     //Game.PrintChat("<font color = \"#FF0000\">Warning: </font>{0}", hero.ChampionName);
                     Utility.DelayAction.Add(visibleTime*1000+500, () => { Enemies[hero].Pinged = false; });
                 }
+            }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Can't Update " + ex.Message);
             }
         }
 

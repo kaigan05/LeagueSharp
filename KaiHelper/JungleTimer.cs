@@ -19,12 +19,11 @@ namespace KaiHelper
 
         static JungleTimer()
         {
+            InitJungleMobs();
             Font = new Font(Drawing.Direct3DDevice, new System.Drawing.Font("Times New Roman", 8));
             Game.OnGameProcessPacket += Game_OnGameProcessPacket;
             Game.OnGameUpdate += Game_OnGameUpdate;
             Drawing.OnEndScene += Drawing_OnEndScene;
-            InitJungleMobs();
-            
         }
         public static void DrawText(Font font, String text, int posX, int posY, Color color)
         {
@@ -37,6 +36,7 @@ namespace KaiHelper
         }
         private static void Drawing_OnEndScene(EventArgs args)
         {
+            try{
             foreach (JungleCamp jungleCamp in JungleCamps)
             {
                 if (jungleCamp.NextRespawnTime <= 0 || jungleCamp.MapType != GMap._MapType)
@@ -44,6 +44,11 @@ namespace KaiHelper
                 Vector2 sPos = Drawing.WorldToMinimap(jungleCamp.MinimapPosition);
                 DrawText(Font, (jungleCamp.NextRespawnTime - (int)Game.ClockTime).ToString(),
                     (int)sPos[0], (int)sPos[1], Color.White);
+            }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Jungle: Can't OnDraw " + ex.Message);
             }
         }
 
@@ -177,8 +182,8 @@ namespace KaiHelper
 
         private static void Game_OnGameUpdate(EventArgs args)
         {
-            //if (!IsActive())
-            //    return;
+            if (!IsActive())
+                return;
             foreach (JungleCamp jungleCamp in JungleCamps)
             {
                 if ((jungleCamp.NextRespawnTime - (int)Game.ClockTime) < 0)
@@ -213,10 +218,10 @@ namespace KaiHelper
 
         private static void Game_OnGameProcessPacket(GamePacketEventArgs args)
         {
-            //if (!IsActive())
-            //    return;
-            //try
-            //{
+            if (!IsActive())
+                return;
+            try
+            {
                 var stream = new MemoryStream(args.PacketData);
                 using (var b = new BinaryReader(stream))
                 {
@@ -233,10 +238,11 @@ namespace KaiHelper
                         pos += sizeof(int);
                     }
                 }
-            //}
-            //catch (EndOfStreamException)
-            //{
-            //}
+            }
+            catch (EndOfStreamException ex)
+            {
+                Console.WriteLine("Jungle on Packet "+ex.Message);
+            }
         }
 
         public class JungleCamp
