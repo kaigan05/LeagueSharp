@@ -13,10 +13,10 @@ namespace KaiHelper
                 return
                     string.Format(
                         !Directory.Exists(
-                            string.Format("{0}\\LeagueSharp\\Repositories\\428B2CBB\\trunk\\KaiHelper\\Images",
+                            string.Format("{0}\\LeagueSharp\\Repositories\\936A055B\\trunk\\KaiHelper\\Images",
                                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)))
-                            ? "{0}\\LeagueSharp\\Repositories\\4A862CBB\\trunk\\KaiHelper\\Images"
-                            : "{0}\\LeagueSharp\\Repositories\\428B2CBB\\trunk\\KaiHelper\\Images",
+                            ? "{0}\\LeagueSharp\\Repositories\\936A055B\\trunk\\KaiHelper\\Images"
+                            : "{0}\\LeagueSharp\\Repositories\\936A055B\\trunk\\KaiHelper\\Images",
                         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
             }
         }

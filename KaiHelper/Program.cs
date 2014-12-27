@@ -9,8 +9,8 @@ namespace KaiHelper
 
         private static void Main(string[] args)
         {
-            try
-            {
+            //try
+            //{
                 Config = new Menu("KaiHelper", "KaiHelp", true);
                 SkillBar.AttachMenu(Config);
                 GankDetector.AttachMenu(Config);
@@ -18,11 +18,11 @@ namespace KaiHelper
                 HealthTurret.AttachMenu(Config);
                 JungleTimer.AttachMenu(Config);
                 Config.AddToMainMenu();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine(ex.Message);
+            //}
         }
     }
 }
