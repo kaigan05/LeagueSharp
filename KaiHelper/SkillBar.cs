@@ -176,7 +176,7 @@ namespace KaiHelper
                     //Console.WriteLine("Sprite.Begin();");
                     for (int index = 0; index < SummonerSpellSlots.Length; index++)
                     {
-                        SpellDataInst summonerSpell = hero.SummonerSpellbook.GetSpell(SummonerSpellSlots[index]);
+                        SpellDataInst summonerSpell = hero.Spellbook.GetSpell(SummonerSpellSlots[index]);
                         float t = summonerSpell.CooldownExpires - Game.Time;
                         float percent = (Math.Abs(summonerSpell.Cooldown) > float.Epsilon)
                             ? t/summonerSpell.Cooldown

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -42,7 +43,7 @@ namespace KaiHelper
                 if (jungleCamp.NextRespawnTime <= 0 || jungleCamp.MapType != GMap._MapType)
                     continue;
                 Vector2 sPos = Drawing.WorldToMinimap(jungleCamp.MinimapPosition);
-                DrawText(Font, (jungleCamp.NextRespawnTime - (int)Game.ClockTime).ToString(),
+                DrawText(Font, (jungleCamp.NextRespawnTime - (int)Game.ClockTime).ToString(CultureInfo.InvariantCulture),
                     (int)sPos[0], (int)sPos[1], Color.White);
             }
             }
@@ -194,7 +195,7 @@ namespace KaiHelper
             }   
         }
 
-        private static void UpdateCamps(int networkId, int campId, byte emptyType)
+        private static void UpdateCamps(int campId, byte emptyType)
         {
             if (emptyType != 3)
             {
@@ -209,11 +210,11 @@ namespace KaiHelper
         private static void EmptyCamp(BinaryReader b)
         {
             byte[] h = b.ReadBytes(4);
-            int nwId = BitConverter.ToInt32(h, 0);
+            BitConverter.ToInt32(h, 0);
             h = b.ReadBytes(4);
             int cId = BitConverter.ToInt32(h, 0);
             byte emptyType = b.ReadByte();
-            UpdateCamps(nwId, cId, emptyType);
+            UpdateCamps(cId, emptyType);
         }
 
         private static void Game_OnGameProcessPacket(GamePacketEventArgs args)
@@ -226,22 +227,30 @@ namespace KaiHelper
                 using (var b = new BinaryReader(stream))
                 {
                     int pos = 0;
-                    var length = (int)b.BaseStream.Length;
+                    var length = (int) b.BaseStream.Length;
                     while (pos < length)
                     {
                         int v = b.ReadInt32();
                         if (v == 195)
                         {
-                            byte[] h = b.ReadBytes(1);
+                            b.ReadBytes(1);
+                            //Console.WriteLine("Bat duoc roi " + args.PacketData[0]);
                             EmptyCamp(b);
                         }
-                        pos += sizeof(int);
+                        pos += sizeof (int);
                     }
                 }
             }
-            catch (EndOfStreamException ex)
+            catch (EndOfStreamException)
             {
-                Console.WriteLine("Jungle on Packet "+ex.Message);
+                //if (args.PacketData[0] == 0xC1 || args.PacketData[0] == 0xC2)
+                //{
+                //    Console.WriteLine("Jungle on Packet1 " + args.PacketData[0]);
+                //}
+                //else if (args.PacketData[0] == Packet.S2C.EmptyJungleCamp.Header)
+                //{
+                //    Console.WriteLine("Jungle on Packet2 " + args.PacketData[0], Packet.S2C.EmptyJungleCamp.Header);
+                //}
             }
         }
 
