@@ -14,7 +14,7 @@ namespace KaiHelper
                 Config = new Menu("KaiHelper", "KaiHelp", true);
                 SkillBar.AttachMenu(Config);
                 GankDetector.AttachMenu(Config);
-                WardDetector.AttachMenu(Config);
+                //WardDetector.AttachMenu(Config);
                 HealthTurret.AttachMenu(Config);
                 JungleTimer.AttachMenu(Config);
                 Config.AddToMainMenu();
