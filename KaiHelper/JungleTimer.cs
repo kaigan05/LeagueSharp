@@ -117,15 +117,7 @@ namespace KaiHelper
             //}
             //Console.WriteLine("Saved");
         }
-        public static void DrawText(Font font, String text, int posX, int posY, Color color)
-        {
-            Rectangle rec = font.MeasureText(null, text, FontDrawFlags.Center);
-            font.DrawText(null, text, posX + 1 + rec.X, posY + 1, Color.Black);
-            font.DrawText(null, text, posX + rec.X, posY + 1, Color.Black);
-            font.DrawText(null, text, posX - 1 + rec.X, posY - 1, Color.Black);
-            font.DrawText(null, text, posX + rec.X, posY - 1, Color.Black);
-            font.DrawText(null, text, posX + rec.X, posY, color);
-        }
+        
         private static void Drawing_OnEndScene(EventArgs args)
         {
             try{
@@ -134,7 +126,7 @@ namespace KaiHelper
                 if (jungleCamp.NextRespawnTime <= 0)
                     continue;
                 Vector2 sPos = Drawing.WorldToMinimap(jungleCamp.MinimapPosition);
-                DrawText(Font, (jungleCamp.NextRespawnTime - (int)Game.ClockTime).ToString(CultureInfo.InvariantCulture),
+                Helper.DrawText(Font, (jungleCamp.NextRespawnTime - (int)Game.ClockTime).ToString(CultureInfo.InvariantCulture),
                     (int)sPos[0], (int)sPos[1], Color.White);
             }
             }

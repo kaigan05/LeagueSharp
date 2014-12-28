@@ -181,9 +181,8 @@ namespace KaiHelper
                         string s = string.Format(t < 1f ? "{0:0.0}" : "{0:0}", t);
                         if (t > 0)
                         {
-                            SmallText.DrawText(null, s, x - 5 - s.Length*5, y + 2 + 19*index,
-                                new ColorBGRA(255, 255, 255, 255));}
-                        
+                            Helper.DrawText(SmallText, s, x - 10, y + 2 + 19*index,new ColorBGRA(255, 255, 255, 255));
+                        }
                         Sprite.Draw(SummonerSpellTextures[summonerSpell.Name], new ColorBGRA(255, 255, 255, 255),
                             new Rectangle(0, 12*n, 12, 12), new Vector3(-x - 3, -y - 3 - 18*index, 0));
                     }
@@ -222,8 +221,7 @@ namespace KaiHelper
                         float t = spell.CooldownExpires - Game.Time;
                         if (!(t > 0) || !(t < 100)) continue;
                         string s = string.Format(t < 1f ? "{0:0.0}" : "{0:0}", t);
-                        SmallText.DrawText(
-                            null, s, x + 16 + index*17 + (23 - s.Length*4)/2, y + 21, new ColorBGRA(255, 255, 255, 255));
+                        Helper.DrawText(SmallText, s, x + 16 + index * 17 + 12, y + 21, new ColorBGRA(255, 255, 255, 255));
                     }
                 }
             }

@@ -104,18 +104,23 @@ namespace KaiHelper
                 var t = MenuGank.Item("Ping").GetValue<StringList>();
                 if (!Enemies[hero].Pinged)
                 {
-                    Enemies[hero].Pinged = true;
+                    Enemies[hero].Pinged = true; Console.WriteLine(t.SelectedIndex);
                     switch (t.SelectedIndex)
                     {
                         case 0:
-                            Packet.S2C.Ping.Encoded(new Packet.S2C.Ping.Struct(hero.Position.X, hero.Position.Y,
-                                0, 0, Packet.PingType.Danger)).Process();
+                            //Alerter alerter = new Alerter(
+                            //    Drawing.Width / 2, Drawing.Height / 2, "Gank", 34, SharpDX.Color.Red, "Calibri", visibleTime * 1000);
+                            
+                            ////alerter.VisibleCondition += sender => IsActive();
+                            //alerter.Add(1);
+                            //Packet.S2C.Ping.Encoded(new Packet.S2C.Ping.Struct(hero.Position.X, hero.Position.Y,
+                            //    0, 0, Packet.PingType.Danger)).Process();
                             break;
                         case 1:
-                            Packet.C2S.Ping.Encoded(
-                                new Packet.C2S.Ping.Struct(hero.Position.X + new Random(10).Next(-200, 200),
-                                    hero.Position.Y + new Random(10).Next(-200, 200), 0, Packet.PingType.Danger))
-                                .Send();
+                            //Packet.C2S.Ping.Encoded(
+                            //    new Packet.C2S.Ping.Struct(hero.Position.X + new Random(10).Next(-200, 200),
+                            //        hero.Position.Y + new Random(10).Next(-200, 200), 0, Packet.PingType.Danger))
+                            //    .Send();
                             break;
                     }
                     Utility.DelayAction.Add(visibleTime*1000+500, () => { Enemies[hero].Pinged = false; });
