@@ -74,7 +74,6 @@ namespace KaiHelper
         public string SkinName { get; set; }
         public WardType Type { get; set; }
         public Obj_AI_Base ObjAiBase { get; set; }
-
         public static bool IsWard(string skinName)
         {
             int duration;
@@ -131,9 +130,10 @@ namespace KaiHelper
             _circle = new Render.Circle(ObjAiBase.Position, 100, Color, 5, true);
             _circle.VisibleCondition +=
                 sender =>
-                    WardDetector.MenuWard.Item("Active").GetValue<bool>() &&
+                    WardDetector.IsActive() &&
                     Render.OnScreen(Drawing.WorldToScreen(ObjAiBase.Position));
             _circle.Add(0);
+
             if (Type != WardType.Trap)
             {
                 _minimapSprite = new Render.Sprite(Bitmap, MinimapPosition)
@@ -151,10 +151,10 @@ namespace KaiHelper
             };
             _timerText.VisibleCondition +=
                 sender =>
-                    WardDetector.MenuWard.Item("Active").GetValue<bool>() &&
+                    WardDetector.IsActive() &&
                     Render.OnScreen(Drawing.WorldToScreen(ObjAiBase.Position));
             _timerText.TextUpdate =
-                () => Utils.FormatTime((EndTime - Environment.TickCount)/1000f);
+                () => Utils.FormatTime((EndTime - Environment.TickCount) / 1000f);
             _timerText.Add(2);
         }
 
@@ -201,7 +201,7 @@ namespace KaiHelper
 
         private static void Game_OnCreate(GameObject sender, EventArgs args)
         {
-            //if (!IsActive()) return; //can not unload?
+            //if (!IsActive()) return; //Where my Menu?
             var @base = sender as Obj_AI_Base;
             if (@base == null) return;
             Obj_AI_Base objAiBase = @base;

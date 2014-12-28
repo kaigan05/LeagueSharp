@@ -31,7 +31,6 @@ namespace KaiHelper
         {
             try
             {
-                Console.WriteLine(LeagueSharpFolder.HudFolder("main"));
                 Sprite = new Sprite(Drawing.Direct3DDevice);
                 HudTexture = Texture.FromMemory(
                     Drawing.Direct3DDevice,
@@ -59,7 +58,7 @@ namespace KaiHelper
                         Height = 13,
                         OutputPrecision = FontPrecision.Default,
                         Quality = FontQuality.Default,
-                    }); 
+                    });
                 Drawing.OnPreReset += DrawingOnPreReset;
                 Drawing.OnPostReset += DrawingOnPostReset;
                 AppDomain.CurrentDomain.DomainUnload += CurrentDomainOnDomainUnload;
@@ -110,7 +109,6 @@ namespace KaiHelper
                     }
                 }
             }
-
             Drawing.OnDraw += Drawing_OnDraw;
         }
 
@@ -162,7 +160,7 @@ namespace KaiHelper
                     Vector2 skillStateBarPos;
                     if (hero.IsEnemy)
                     {
-                        skillStateBarPos = hero.HPBarPosition + new Vector2(-9, 17);
+                        skillStateBarPos = hero.HPBarPosition + new Vector2(-10, 17);
                     }
                     else
                     {
@@ -170,11 +168,8 @@ namespace KaiHelper
                     }
                     var x = (int) skillStateBarPos.X;
                     var y = (int) skillStateBarPos.Y;
-                    //Console.WriteLine("Sprite.Begin();1");
                     Sprite.Begin();
-                    //Console.WriteLine("Sprite.Begin();");
                     Sprite.Draw(HudTexture, new ColorBGRA(255, 255, 255, 255), null, new Vector3(-x, -y, 0));
-                    //Console.WriteLine("Sprite.Begin();");
                     for (int index = 0; index < SummonerSpellSlots.Length; index++)
                     {
                         SpellDataInst summonerSpell = hero.Spellbook.GetSpell(SummonerSpellSlots[index]);
@@ -187,13 +182,10 @@ namespace KaiHelper
                         if (t > 0)
                         {
                             SmallText.DrawText(null, s, x - 5 - s.Length*5, y + 2 + 19*index,
-                                new ColorBGRA(255, 255, 255, 255));
-                            //Console.WriteLine("SmallText.DrawText(null, s, x - 5 - s.Length*5, y + 2 + 19*index,new ColorBGRA(255, 255, 255, 255));");
-                        }
+                                new ColorBGRA(255, 255, 255, 255));}
                         
                         Sprite.Draw(SummonerSpellTextures[summonerSpell.Name], new ColorBGRA(255, 255, 255, 255),
                             new Rectangle(0, 12*n, 12, 12), new Vector3(-x - 3, -y - 3 - 18*index, 0));
-                        //Console.WriteLine(summonerSpell.Name);
                     }
                     for (int index = 0; index < SpellSlots.Length; index++)
                     {
@@ -215,7 +207,6 @@ namespace KaiHelper
                             SummonerSpellTextures[hero.ChampionName + "_" + spellSlot],
                             new ColorBGRA(255, 255, 255, 255), new Rectangle(0, 0, 14, 14),
                             new Vector3(-x - 21 - index*17, -y - 20, 0));
-                        //Console.WriteLine(SummonerSpellTextures[hero.ChampionName + "_" + spellSlot]);
                         if (spell.State == SpellState.Cooldown || spell.State == SpellState.NotLearned)
                         {
                             Sprite.Draw(ButtonRedTexture,

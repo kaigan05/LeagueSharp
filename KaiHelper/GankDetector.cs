@@ -118,7 +118,6 @@ namespace KaiHelper
                                 .Send();
                             break;
                     }
-                    //Game.PrintChat("<font color = \"#FF0000\">Warning: </font>{0}", hero.ChampionName);
                     Utility.DelayAction.Add(visibleTime*1000+500, () => { Enemies[hero].Pinged = false; });
                 }
             }
