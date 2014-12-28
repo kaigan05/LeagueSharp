@@ -31,7 +31,7 @@ namespace KaiHelper
         {
             try
             {
-                //Console.WriteLine(LeagueSharpFolder.HudFolder("main"));
+                Console.WriteLine(LeagueSharpFolder.HudFolder("main"));
                 Sprite = new Sprite(Drawing.Direct3DDevice);
                 HudTexture = Texture.FromMemory(
                     Drawing.Direct3DDevice,
