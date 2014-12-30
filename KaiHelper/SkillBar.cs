@@ -228,7 +228,7 @@ namespace KaiHelper
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Sprite.End();
             }
         }
     }
