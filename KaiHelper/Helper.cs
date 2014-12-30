@@ -30,5 +30,35 @@ namespace KaiHelper
             WebResponse response = req.GetResponse();
             return response.GetResponseStream();
         }
+
+        public static string ReadFile(string path)
+        {
+            using (var sr=new StreamReader(path))
+            {
+                return sr.ReadToEnd();
+            }
+        }
+
+        public static string ReadFileFromUrl(string url)
+        {
+            WebClient client = new WebClient();
+            Stream stream = client.OpenRead(url);
+            StreamReader reader = new StreamReader(stream);
+            return reader.ReadToEnd();
+        }
+        public static bool IsNewVersion(string newVersion)
+        {
+            string curVersion=ReadFile(Path.Combine(LeagueSharpFolder.MainFolder, "version.txt"));
+            var o = curVersion.Split('.');
+            var n=newVersion.Split('.');
+            for (int i = n.Length - 1;i >= 0;  i--)
+            {
+                if (Convert.ToInt32(n[i]) > Convert.ToInt32(o[i]))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
