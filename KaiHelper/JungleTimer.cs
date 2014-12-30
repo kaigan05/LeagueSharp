@@ -45,7 +45,7 @@ namespace KaiHelper
                     new[] { "SRU_Krug5.1.2", "SRU_KrugMini5.1.1" }));
             _jungleCamps.Add(
                 new JungleCamp(
-                    "SRU_Dragon", 100, new Vector3(9866.148f, 4414.014f, -71.2406f), new[] { "SRU_Dragon6.1.1" }));
+                    "SRU_Dragon", 360, new Vector3(9866.148f, 4414.014f, -71.2406f), new[] { "SRU_Dragon6.1.1" }));
             _jungleCamps.Add(
                 new JungleCamp(
                     "SRU_Blue", 300, new Vector3(10931.73f, 6990.844f, 51.72291f),
