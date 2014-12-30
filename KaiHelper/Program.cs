@@ -17,6 +17,11 @@ namespace KaiHelper
             new HealthTurret(Config);
             new JungleTimer(Config);
             Config.AddToMainMenu();
+            CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
+        }
+
+        private static void Game_OnGameLoad(EventArgs args)
+        {
             if (Helper.IsNewVersion(Helper.ReadFileFromUrl("https://raw.githubusercontent.com/kaigan05/LeagueSharp/master/KaiHelper/version.txt")))
             {
                 Game.PrintChat("<font color = \"#ff002b\">KaiHelper version is old. Please check for updates!</font>");

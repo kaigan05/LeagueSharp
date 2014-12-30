@@ -41,10 +41,16 @@ namespace KaiHelper
 
         public static string ReadFileFromUrl(string url)
         {
-            WebClient client = new WebClient();
-            Stream stream = client.OpenRead(url);
-            StreamReader reader = new StreamReader(stream);
-            return reader.ReadToEnd();
+            using (var client = new WebClient())
+            {
+                using (var stream = client.OpenRead(url))
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        return reader.ReadToEnd();
+                    }
+                }
+            }
         }
         public static bool IsNewVersion(string newVersion)
         {

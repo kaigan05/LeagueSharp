@@ -31,16 +31,6 @@ namespace KaiHelper
             Drawing.OnEndScene += DrawTurrentHealth;
         }
 
-        public void DrawText(Font font, String text, int posX, int posY, Color color)
-        {
-            Rectangle rec = font.MeasureText(null, text, FontDrawFlags.Center);
-            font.DrawText(null, text, posX + 1 + rec.X, posY + 1, Color.Black);
-            font.DrawText(null, text, posX + rec.X, posY + 1, Color.Black);
-            font.DrawText(null, text, posX - 1 + rec.X, posY - 1, Color.Black);
-            font.DrawText(null, text, posX + rec.X, posY - 1, Color.Black);
-            font.DrawText(null, text, posX + rec.X, posY, color);
-        }
-
         private bool IsActive()
         {
             return MenuHealthTurret.Item("HealthActive").GetValue<bool>();
@@ -73,23 +63,23 @@ namespace KaiHelper
                 var perHealth = (int) turret.HealthPercentage();
                 if (perHealth >= 75)
                 {
-                    DrawText(
+                    Helper.DrawText(
                         Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1], Color.LimeGreen);
                 }
                 else if (perHealth < 75 && perHealth >= 50)
                 {
-                    DrawText(
+                    Helper.DrawText(
                         Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1],
                         Color.YellowGreen);
                 }
                 else if (perHealth < 50 && perHealth >= 25)
                 {
-                    DrawText(
+                    Helper.DrawText(
                         Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1], Color.Orange);
                 }
                 else if (perHealth < 25)
                 {
-                    DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1], Color.Red);
+                    Helper.DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int)pos[0], (int)pos[1], Color.Red);
                 }
             }
             foreach (var inhibitor in ObjectManager.Get<Obj_BarracksDampener>())
@@ -100,25 +90,25 @@ namespace KaiHelper
                     var health = (int) ((inhibitor.Health / inhibitor.MaxHealth) * 100);
                     if (health >= 75)
                     {
-                        DrawText(
+                        Helper.DrawText(
                             Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1],
                             Color.LimeGreen);
                     }
                     else if (health < 75 && health >= 50)
                     {
-                        DrawText(
+                        Helper.DrawText(
                             Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1],
                             Color.YellowGreen);
                     }
                     else if (health < 50 && health >= 25)
                     {
-                        DrawText(
+                        Helper.DrawText(
                             Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1],
                             Color.Orange);
                     }
                     else if (health < 25)
                     {
-                        DrawText(
+                        Helper.DrawText(
                             Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1], Color.Red);
                     }
                 }

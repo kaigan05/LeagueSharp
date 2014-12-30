@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -50,7 +52,7 @@ namespace KaiHelper
                     Drawing.Direct3DDevice,
                     (byte[])
                         new ImageConverter().ConvertTo(
-                            new Bitmap(LeagueSharpFolder.HudFolder("button_red")), typeof(byte[])), 14, 14, 0,
+                            new Bitmap(LeagueSharpFolder.HudFolder("disable")), typeof(byte[])), 14, 14, 0,
                     Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
                 SmallText = new Font(
                     Drawing.Direct3DDevice,
@@ -131,104 +133,111 @@ namespace KaiHelper
                 Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
         }
 
+        private int _nextTime;
+
         private void Drawing_OnDraw(EventArgs args)
         {
-            try
+            if (Environment.TickCount - _nextTime >= 0)
             {
-                if (Drawing.Direct3DDevice == null || Drawing.Direct3DDevice.IsDisposed)
+                _nextTime = Environment.TickCount + 10;
+                try
                 {
-                    return;
-                }
-                if (Sprite.IsDisposed)
-                {
-                    return;
-                }
-                foreach (
-                    Obj_AI_Hero hero in
-                        ObjectManager.Get<Obj_AI_Hero>()
+                    if (Drawing.Direct3DDevice == null || Drawing.Direct3DDevice.IsDisposed)
+                    {
+                        return;
+                    }
+                    if (Sprite.IsDisposed)
+                    {
+                        return;
+                    }
+                    foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>()
                             .Where(
                                 hero =>
-                                    hero.IsValid && !hero.IsMe && hero.IsHPBarRendered &&
+                                    hero.IsValid && !hero.IsDead && !hero.IsMe && hero.IsHPBarRendered &&
                                     (hero.IsEnemy && MenuSkillBar.Item("OnEnemies").GetValue<bool>() ||
                                      hero.IsAlly && MenuSkillBar.Item("OnAllies").GetValue<bool>())))
-                {
-                    Vector2 skillStateBarPos;
-                    if (hero.IsEnemy)
                     {
-                        skillStateBarPos = hero.HPBarPosition + new Vector2(-10, 17);
-                    }
-                    else
-                    {
-                        skillStateBarPos = hero.HPBarPosition + new Vector2(-10, 14);
-                    }
-                    var x = (int) skillStateBarPos.X;
-                    var y = (int) skillStateBarPos.Y;
-                    Sprite.Begin();
-                    Sprite.Draw(HudTexture, new ColorBGRA(255, 255, 255, 255), null, new Vector3(-x, -y, 0));
-                    for (int index = 0; index < SummonerSpellSlots.Length; index++)
-                    {
-                        SpellDataInst summonerSpell = hero.Spellbook.GetSpell(SummonerSpellSlots[index]);
-                        float t = summonerSpell.CooldownExpires - Game.Time;
-                        float percent = (Math.Abs(summonerSpell.Cooldown) > float.Epsilon)
-                            ? t / summonerSpell.Cooldown
-                            : 1f;
-                        int n = (t > 0) ? (int) (19 * (1f - percent)) : 19;
-                        string s = string.Format(t < 1f ? "{0:0.0}" : "{0:0}", t);
-                        if (t > 0)
+                        Vector2 skillStateBarPos;
+                        if (hero.IsEnemy)
                         {
-                            Helper.DrawText(SmallText, s, x - 10, y + 2 + 19 * index, new ColorBGRA(255, 255, 255, 255));
+                            skillStateBarPos = hero.HPBarPosition + new Vector2(-10, 17);
                         }
-                        Sprite.Draw(
-                            _summonerSpellTextures[summonerSpell.Name], new ColorBGRA(255, 255, 255, 255),
-                            new Rectangle(0, 12 * n, 12, 12), new Vector3(-x - 3, -y - 3 - 18 * index, 0));
-                    }
-                    for (int index = 0; index < SpellSlots.Length; index++)
-                    {
-                        SpellSlot spellSlot = SpellSlots[index];
-                        SpellDataInst spell = hero.Spellbook.GetSpell(spellSlot);
-                        for (int i = 1; i <= 5; i++)
+                        else
                         {
-                            if (spell.Level == i)
+                            skillStateBarPos = hero.HPBarPosition + new Vector2(-10, 14);
+                        }
+                        var x = (int) skillStateBarPos.X;
+                        var y = (int) skillStateBarPos.Y;
+                        Sprite.Begin();
+                        Sprite.Draw(HudTexture, new ColorBGRA(255, 255, 255, 255), null, new Vector3(-x, -y, 0));
+                        for (int index = 0; index < SummonerSpellSlots.Length; index++)
+                        {
+                            SpellDataInst summonerSpell = hero.Spellbook.GetSpell(SummonerSpellSlots[index]);
+                            float t = summonerSpell.CooldownExpires - Game.Time;
+                            float percent = (Math.Abs(summonerSpell.Cooldown) > float.Epsilon)
+                                ? t / summonerSpell.Cooldown
+                                : 1f;
+                            int n = (t > 0) ? (int) (19 * (1f - percent)) : 19;
+                            string s = string.Format(t < 1f ? "{0:0.0}" : "{0:0}", t);
+                            if (t > 0)
                             {
-                                for (int j = 1; j <= i; j++)
+                                Helper.DrawText(
+                                    SmallText, s, x - 10, y + 2 + 19 * index, new ColorBGRA(255, 255, 255, 255));
+                            }
+                            Sprite.Draw(
+                                _summonerSpellTextures[summonerSpell.Name], new ColorBGRA(255, 255, 255, 255),
+                                new Rectangle(0, 12 * n, 12, 12), new Vector3(-x - 3, -y - 3 - 18 * index, 0));
+                        }
+                        for (int index = 0; index < SpellSlots.Length; index++)
+                        {
+                            SpellSlot spellSlot = SpellSlots[index];
+                            SpellDataInst spell = hero.Spellbook.GetSpell(spellSlot);
+                            for (int i = 1; i <= 5; i++)
+                            {
+                                if (spell.Level == i)
                                 {
-                                    Sprite.Draw(
-                                        FrameLevelTexture, new ColorBGRA(255, 255, 255, 255), new Rectangle(0, 0, 2, 3),
-                                        new Vector3(-x - 18 - index * 17 - j * 3, -y - 36, 0));
+                                    for (int j = 1; j <= i; j++)
+                                    {
+                                        Sprite.Draw(
+                                            FrameLevelTexture, new ColorBGRA(255, 255, 255, 255),
+                                            new Rectangle(0, 0, 2, 3),
+                                            new Vector3(-x - 18 - index * 17 - j * 3, -y - 36, 0));
+                                    }
                                 }
                             }
-                        }
 
-                        Sprite.Draw(
-                            _summonerSpellTextures[hero.ChampionName + "_" + spellSlot],
-                            new ColorBGRA(255, 255, 255, 255), new Rectangle(0, 0, 14, 14),
-                            new Vector3(-x - 21 - index * 17, -y - 20, 0));
-                        if (spell.State == SpellState.Cooldown || spell.State == SpellState.NotLearned)
-                        {
                             Sprite.Draw(
-                                ButtonRedTexture, new ColorBGRA(0, 0, 0, 180), new Rectangle(0, 0, 14, 14),
+                                _summonerSpellTextures[hero.ChampionName + "_" + spellSlot],
+                                new ColorBGRA(255, 255, 255, 255), new Rectangle(0, 0, 14, 14),
                                 new Vector3(-x - 21 - index * 17, -y - 20, 0));
+                            if (spell.State == SpellState.Cooldown || spell.State == SpellState.NotLearned)
+                            {
+                                Sprite.Draw(
+                                    ButtonRedTexture, new ColorBGRA(0, 0, 0, 180), new Rectangle(0, 0, 14, 14),
+                                    new Vector3(-x - 21 - index * 17, -y - 20, 0));
+                            }
                         }
-                    }
-                    Sprite.End();
-                    for (int index = 0; index < SpellSlots.Length; index++)
-                    {
-                        SpellSlot spellSlot = SpellSlots[index];
-                        SpellDataInst spell = hero.Spellbook.GetSpell(spellSlot);
-                        float t = spell.CooldownExpires - Game.Time;
-                        if (!(t > 0) || !(t < 100))
+                        Sprite.End();
+                        for (int index = 0; index < SpellSlots.Length; index++)
                         {
-                            continue;
+                            SpellSlot spellSlot = SpellSlots[index];
+                            SpellDataInst spell = hero.Spellbook.GetSpell(spellSlot);
+                            float t = spell.CooldownExpires - Game.Time;
+                            if (!(t > 0) || !(t < 100))
+                            {
+                                continue;
+                            }
+                            string s = string.Format(t < 1f ? "{0:0.0}" : "{0:0}", t);
+                            Helper.DrawText(
+                                SmallText, s, x + 16 + index * 17 + 12, y + 21, new ColorBGRA(255, 255, 255, 255));
                         }
-                        string s = string.Format(t < 1f ? "{0:0.0}" : "{0:0}", t);
-                        Helper.DrawText(
-                            SmallText, s, x + 16 + index * 17 + 12, y + 21, new ColorBGRA(255, 255, 255, 255));
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Sprite.End();
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Sprite.End();
+                }
             }
         }
     }

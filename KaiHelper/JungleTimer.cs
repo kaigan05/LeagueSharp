@@ -124,7 +124,7 @@ namespace KaiHelper
             {
                 return;
             }
-            if ((int) Game.ClockTime - _nextTime == 0)
+            if ((int) Game.ClockTime - _nextTime >= 0)
             {
                 _nextTime = (int) Game.ClockTime + 1;
                 var minions =
@@ -166,10 +166,6 @@ namespace KaiHelper
                     jungleCamp.NextRespawnTime = 0;
                 }
             }
-            else
-            {
-                _nextTime = (int) Game.ClockTime + 1;
-            }
         }
 
         public class JungleCamp
@@ -198,6 +194,6 @@ namespace KaiHelper
             return _menuJungle.Item("JungleActive").GetValue<bool>();
         }
 
-        private Menu _menuJungle;
+        private readonly Menu _menuJungle;
     }
 }
