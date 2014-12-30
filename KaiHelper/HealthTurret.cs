@@ -9,11 +9,16 @@ namespace KaiHelper
 {
     internal class HealthTurret
     {
-        public static Font Text;
-        public static Menu MenuHealthTurret;
+        public Font Text;
+        public Menu MenuHealthTurret;
 
-        static HealthTurret()
+        public HealthTurret(Menu config)
         {
+            MenuHealthTurret = config.AddSubMenu(new Menu("Health", "Health"));
+            MenuHealthTurret.AddItem(
+                new MenuItem("TIHealth", "Turret & Inhibitor Health").SetValue(
+                    new StringList(new[] { "Percent", "Health " })));
+            MenuHealthTurret.AddItem(new MenuItem("HealthActive", "Active").SetValue(true));
             Text = new Font(
                 Drawing.Direct3DDevice,
                 new FontDescription
@@ -26,7 +31,7 @@ namespace KaiHelper
             Drawing.OnEndScene += DrawTurrentHealth;
         }
 
-        public static void DrawText(Font font, String text, int posX, int posY, Color color)
+        public void DrawText(Font font, String text, int posX, int posY, Color color)
         {
             Rectangle rec = font.MeasureText(null, text, FontDrawFlags.Center);
             font.DrawText(null, text, posX + 1 + rec.X, posY + 1, Color.Black);
@@ -35,20 +40,13 @@ namespace KaiHelper
             font.DrawText(null, text, posX + rec.X, posY - 1, Color.Black);
             font.DrawText(null, text, posX + rec.X, posY, color);
         }
-        public static void AttachMenu(Menu menu)
-        {
-            MenuHealthTurret = menu.AddSubMenu(new Menu("Health", "Health"));
-            MenuHealthTurret.AddItem(
-                new MenuItem("TIHealth", "Turret & Inhibitor Health").SetValue(new StringList(new[] { "Percent", "Health " })));
-            MenuHealthTurret.AddItem(new MenuItem("HealthActive", "Active").SetValue(true));
-        }
 
-        private static bool IsActive()
+        private bool IsActive()
         {
             return MenuHealthTurret.Item("HealthActive").GetValue<bool>();
         }
 
-        private static void DrawTurrentHealth(EventArgs args)
+        private void DrawTurrentHealth(EventArgs args)
         {
             if (!IsActive())
             {
@@ -56,58 +54,72 @@ namespace KaiHelper
             }
             foreach (var turret in ObjectManager.Get<Obj_AI_Turret>())
             {
-                if ((turret.HealthPercentage() == 100)) continue;
+                if ((turret.HealthPercentage() == 100))
+                {
+                    continue;
+                }
                 int health = 0;
                 switch (MenuHealthTurret.Item("TIHealth").GetValue<StringList>().SelectedIndex)
                 {
                     case 0:
-                        health = (int)turret.HealthPercentage();
+                        health = (int) turret.HealthPercentage();
                         break;
 
                     case 1:
                         health = (int) turret.Health;
                         break;
-                } 
+                }
                 Vector2 pos = Drawing.WorldToMinimap(turret.Position);
-                var perHealth=(int)turret.HealthPercentage();
+                var perHealth = (int) turret.HealthPercentage();
                 if (perHealth >= 75)
                 {
-                    DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1],Color.LimeGreen);
+                    DrawText(
+                        Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1], Color.LimeGreen);
                 }
-                else if (perHealth < 75 && perHealth>=50)
+                else if (perHealth < 75 && perHealth >= 50)
                 {
-                    DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int)pos[0], (int)pos[1], Color.YellowGreen);
+                    DrawText(
+                        Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1],
+                        Color.YellowGreen);
                 }
-                else if (perHealth < 50 && perHealth>=25)
+                else if (perHealth < 50 && perHealth >= 25)
                 {
-                    DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int)pos[0], (int)pos[1], Color.Orange);
+                    DrawText(
+                        Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1], Color.Orange);
                 }
                 else if (perHealth < 25)
                 {
-                    DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int)pos[0], (int)pos[1], Color.Red);
+                    DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1], Color.Red);
                 }
             }
             foreach (var inhibitor in ObjectManager.Get<Obj_BarracksDampener>())
             {
-                if (inhibitor.Health!=0 && (inhibitor.Health / inhibitor.MaxHealth) * 100 != 100)
+                if (inhibitor.Health != 0 && (inhibitor.Health / inhibitor.MaxHealth) * 100 != 100)
                 {
                     Vector2 pos = Drawing.WorldToMinimap(inhibitor.Position);
-                    var health = (int)((inhibitor.Health / inhibitor.MaxHealth) * 100);
+                    var health = (int) ((inhibitor.Health / inhibitor.MaxHealth) * 100);
                     if (health >= 75)
                     {
-                        DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int)pos[0], (int)pos[1], Color.LimeGreen);
+                        DrawText(
+                            Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1],
+                            Color.LimeGreen);
                     }
                     else if (health < 75 && health >= 50)
                     {
-                        DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int)pos[0], (int)pos[1], Color.YellowGreen);
+                        DrawText(
+                            Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1],
+                            Color.YellowGreen);
                     }
                     else if (health < 50 && health >= 25)
                     {
-                        DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int)pos[0], (int)pos[1], Color.Orange);
+                        DrawText(
+                            Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1],
+                            Color.Orange);
                     }
                     else if (health < 25)
                     {
-                        DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int)pos[0], (int)pos[1], Color.Red);
+                        DrawText(
+                            Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1], Color.Red);
                     }
                 }
             }

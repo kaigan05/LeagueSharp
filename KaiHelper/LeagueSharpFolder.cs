@@ -20,9 +20,21 @@ namespace KaiHelper
                     {
                         var config = new XmlDocument();
                         config.Load(configFile);
-                        var node = config.DocumentElement.SelectSingleNode("/Config/SelectedProfile/InstalledAssemblies");
-                        foreach (var element in node.ChildNodes.Cast<XmlElement>().Where(element => element.ChildNodes.Cast<XmlElement>().Any(e => e.Name == "Name" && e.InnerText == "KaiHelper"))) {
-                            return Path.GetDirectoryName(element.ChildNodes.Cast<XmlElement>().First(e => e.Name == "PathToProjectFile").InnerText);
+                        var node = config.DocumentElement.SelectSingleNode(
+                            "/Config/SelectedProfile/InstalledAssemblies");
+                        foreach (
+                            var element in
+                                node.ChildNodes.Cast<XmlElement>()
+                                    .Where(
+                                        element =>
+                                            element.ChildNodes.Cast<XmlElement>()
+                                                .Any(e => e.Name == "Name" && e.InnerText == "KaiHelper")))
+                        {
+                            return
+                                Path.GetDirectoryName(
+                                    element.ChildNodes.Cast<XmlElement>()
+                                        .First(e => e.Name == "PathToProjectFile")
+                                        .InnerText);
                         }
                     }
                 }
@@ -34,9 +46,11 @@ namespace KaiHelper
             }
         }
 
-        public static string SummonerSpellFolder(string fileName=null)
+        public static string SummonerSpellFolder(string fileName = null)
         {
-            return fileName == null ? string.Format(@"{0}\Images\AlternateSS\", MainFolder) : string.Format(@"{0}\Images\AlternateSS\{1}.png", MainFolder, fileName);
+            return fileName == null
+                ? string.Format(@"{0}\Images\AlternateSS\", MainFolder)
+                : string.Format(@"{0}\Images\AlternateSS\{1}.png", MainFolder, fileName);
         }
 
         public static string SpellFolder(string fileName)
@@ -52,13 +66,6 @@ namespace KaiHelper
         public static string HudFolder(string fileName)
         {
             return string.Format(@"{0}\Images\HUD\{1}.png", MainFolder, fileName);
-        }
-
-        public static Stream Download(string url)
-        {
-            WebRequest req = WebRequest.Create(url);
-            WebResponse response = req.GetResponse();
-            return response.GetResponseStream();
         }
     }
 }

@@ -15,9 +15,11 @@ namespace KaiHelper
         private Render.Circle _circle;
         private Render.Sprite _minimapSprite;
         private Render.Text _timerText;
+        private readonly WardDetector _wardDetector;
 
-        public Ward(string skinName, int startTime, Obj_AI_Base objAiBase)
+        public Ward(string skinName, int startTime, Obj_AI_Base objAiBase, WardDetector wardDetector)
         {
+            _wardDetector = wardDetector;
             int duration;
             WardType type;
             GetWarInfo(skinName, out duration, out type);
@@ -63,7 +65,7 @@ namespace KaiHelper
             get
             {
                 return Drawing.WorldToMinimap(ObjAiBase.Position) +
-                       new Vector2(-Bitmap.Width/2*Scale, -Bitmap.Height/2*Scale);
+                       new Vector2(-Bitmap.Width / 2 * Scale, -Bitmap.Height / 2 * Scale);
             }
         }
 
@@ -74,6 +76,7 @@ namespace KaiHelper
         public string SkinName { get; set; }
         public WardType Type { get; set; }
         public Obj_AI_Base ObjAiBase { get; set; }
+
         public static bool IsWard(string skinName)
         {
             int duration;
@@ -86,15 +89,15 @@ namespace KaiHelper
             switch (skinName)
             {
                 case "YellowTrinket":
-                    duration = 60*1000;
+                    duration = 60 * 1000;
                     type = WardType.Green;
                     break;
                 case "YellowTrinketUpgrade":
-                    duration = 60*2*1000;
+                    duration = 60 * 2 * 1000;
                     type = WardType.Green;
                     break;
                 case "SightWard":
-                    duration = 60*3*1000;
+                    duration = 60 * 3 * 1000;
                     type = WardType.Green;
                     break;
                 case "VisionWard":
@@ -102,19 +105,19 @@ namespace KaiHelper
                     type = WardType.Pink;
                     break;
                 case "CaitlynTrap":
-                    duration = 60*4*1000;
+                    duration = 60 * 4 * 1000;
                     type = WardType.Trap;
                     break;
                 case "TeemoMushroom":
-                    duration = 60*10*1000;
+                    duration = 60 * 10 * 1000;
                     type = WardType.Trap;
                     break;
                 case "Nidalee_Spear":
-                    duration = 60*2*1000;
+                    duration = 60 * 2 * 1000;
                     type = WardType.Trap;
                     break;
                 case "ShacoBox":
-                    duration = 60*1*1000;
+                    duration = 60 * 1 * 1000;
                     type = WardType.Trap;
                     break;
                 default:
@@ -129,20 +132,18 @@ namespace KaiHelper
         {
             _circle = new Render.Circle(ObjAiBase.Position, 100, Color, 5, true);
             _circle.VisibleCondition +=
-                sender =>
-                    WardDetector.IsActive() &&
-                    Render.OnScreen(Drawing.WorldToScreen(ObjAiBase.Position));
+                sender => _wardDetector.IsActive() && Render.OnScreen(Drawing.WorldToScreen(ObjAiBase.Position));
             _circle.Add(0);
 
             if (Type != WardType.Trap)
             {
-                _minimapSprite = new Render.Sprite(Bitmap, MinimapPosition)
-                {
-                    Scale = new Vector2(Scale, Scale)
-                };
+                _minimapSprite = new Render.Sprite(Bitmap, MinimapPosition) { Scale = new Vector2(Scale, Scale) };
                 _minimapSprite.Add(0);
             }
-            if (Duration == int.MaxValue) return;
+            if (Duration == int.MaxValue)
+            {
+                return;
+            }
             _timerText = new Render.Text(10, 10, "t", 18, new ColorBGRA(255, 255, 255, 255))
             {
                 OutLined = true,
@@ -150,11 +151,8 @@ namespace KaiHelper
                 Centered = true
             };
             _timerText.VisibleCondition +=
-                sender =>
-                    WardDetector.IsActive() &&
-                    Render.OnScreen(Drawing.WorldToScreen(ObjAiBase.Position));
-            _timerText.TextUpdate =
-                () => Utils.FormatTime((EndTime - Environment.TickCount) / 1000f);
+                sender => _wardDetector.IsActive() && Render.OnScreen(Drawing.WorldToScreen(ObjAiBase.Position));
+            _timerText.TextUpdate = () => Utils.FormatTime((EndTime - Environment.TickCount) / 1000f);
             _timerText.Add(2);
         }
 
@@ -173,48 +171,56 @@ namespace KaiHelper
         }
     }
 
-    public static class WardDetector
+    public class WardDetector
     {
-        private static readonly List<Ward> DetectedWards = new List<Ward>();
-        public static Menu MenuWard;
+        private readonly List<Ward> _detectedWards = new List<Ward>();
+        public Menu MenuWard;
 
-        static WardDetector()
+        public WardDetector(Menu config)
         {
-            GameObject.OnCreate += Game_OnCreate;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            MenuWard = config;
+            MenuWard.AddItem(new MenuItem("WardActive", "Ward Detector")).SetValue(true);
             foreach (GameObject obj in ObjectManager.Get<GameObject>().Where(o => o is Obj_AI_Base))
             {
                 Game_OnCreate(obj, null);
             }
+            GameObject.OnCreate += Game_OnCreate;
+            Game.OnGameUpdate += Game_OnGameUpdate;
         }
 
-        public static void AttachMenu(Menu menu)
-        {
-            MenuWard = menu;
-            MenuWard.AddItem(new MenuItem("WardActive", "Ward Detector")).SetValue(true);
-        }
-
-        public static bool IsActive()
+        public bool IsActive()
         {
             return MenuWard.Item("WardActive").GetValue<bool>();
         }
 
-        private static void Game_OnCreate(GameObject sender, EventArgs args)
+        private void Game_OnCreate(GameObject sender, EventArgs args)
         {
-            //if (!IsActive()) return; //Where my Menu?
+            if (!IsActive())
+            {
+                return;
+            }
             var @base = sender as Obj_AI_Base;
-            if (@base == null) return;
+            if (@base == null)
+            {
+                return;
+            }
             Obj_AI_Base objAiBase = @base;
             if (objAiBase.IsAlly) return;
-            if (!Ward.IsWard(objAiBase.SkinName)) return;
-            int startTime = Environment.TickCount - (int) ((objAiBase.MaxMana - objAiBase.Mana)*1000);
-            DetectedWards.Add(new Ward(objAiBase.SkinName, startTime, objAiBase));
+            if (!Ward.IsWard(objAiBase.SkinName))
+            {
+                return;
+            }
+            int startTime = Environment.TickCount - (int) ((objAiBase.MaxMana - objAiBase.Mana) * 1000);
+            _detectedWards.Add(new Ward(objAiBase.SkinName, startTime, objAiBase, this));
         }
 
-        private static void Game_OnGameUpdate(EventArgs args)
+        private void Game_OnGameUpdate(EventArgs args)
         {
-            if (!IsActive()) return;
-            DetectedWards.RemoveAll(w => w.ObjAiBase.IsDead && w.RemoveCircle());
+            if (!IsActive())
+            {
+                return;
+            }
+            _detectedWards.RemoveAll(w => w.ObjAiBase.IsDead && w.RemoveCircle());
         }
     }
 

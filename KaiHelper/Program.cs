@@ -10,11 +10,11 @@ namespace KaiHelper
         private static void Main(string[] args)
         {
             Config = new Menu("KaiHelper", "KaiHelp", true);
-            SkillBar.AttachMenu(Config);
-            GankDetector.AttachMenu(Config);
-            WardDetector.AttachMenu(Config);
-            HealthTurret.AttachMenu(Config);
-            JungleTimer.AttachMenu(Config);
+            new SkillBar(Config);
+            new GankDetector(Config);
+            new WardDetector(Config);
+            new HealthTurret(Config);
+            new JungleTimer(Config);
             Config.AddToMainMenu();
         }
     }
