@@ -117,7 +117,6 @@ namespace KaiHelper
                 Helper.DrawText(_mapFont, timeClock, (int) pos.X, (int) pos.Y - 15, Color.White);
             }
         }
-
         private void Game_OnGameUpdate(EventArgs args)
         {
             if (!IsActive())

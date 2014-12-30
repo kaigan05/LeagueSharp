@@ -105,6 +105,15 @@ namespace KaiHelper
             }
             foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
             {
+                Console.WriteLine(hero.Name);
+                foreach (var summonerSpellSlot in SummonerSpellSlots)
+                {
+                    SpellDataInst summonerSpell = hero.Spellbook.GetSpell(summonerSpellSlot);
+                    Console.WriteLine(summonerSpell.Name);
+                }
+            }
+            foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
+            {
                 foreach (SpellSlot spellSlot in SpellSlots)
                 {
                     if (!_summonerSpellTextures.ContainsKey(hero.ChampionName + "_" + spellSlot))
