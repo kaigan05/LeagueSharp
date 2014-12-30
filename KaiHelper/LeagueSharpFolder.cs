@@ -21,7 +21,7 @@ namespace KaiHelper
                         var config = new XmlDocument();
                         config.Load(configFile);
                         var node = config.DocumentElement.SelectSingleNode(
-                            "/Config/SelectedProfile/InstalledAssemblies");
+                            "/Config/Profiles/Profiles/InstalledAssemblies");
                         foreach (
                             var element in
                                 node.ChildNodes.Cast<XmlElement>()
