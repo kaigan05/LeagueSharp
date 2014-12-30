@@ -49,13 +49,13 @@ namespace KaiHelper
         public static string SummonerSpellFolder(string fileName = null)
         {
             return fileName == null
-                ? string.Format(@"{0}\Images\AlternateSS\", MainFolder)
-                : string.Format(@"{0}\Images\AlternateSS\{1}.png", MainFolder, fileName);
+                ? string.Format(@"{0}\Images\SSpell\", MainFolder)
+                : string.Format(@"{0}\Images\SSpell\{1}.png", MainFolder, fileName);
         }
 
         public static string SpellFolder(string fileName)
         {
-            return string.Format(@"{0}\Images\SkillsSmall\{1}.png", MainFolder, fileName);
+            return string.Format(@"{0}\Images\Skills\{1}.png", MainFolder, fileName);
         }
 
         public static string MiniMapFolder(string fileName)
