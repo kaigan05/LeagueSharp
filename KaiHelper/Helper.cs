@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using SharpDX;
 using SharpDX.Direct3D9;
 
@@ -39,32 +41,22 @@ namespace KaiHelper
             }
         }
 
-        public static string ReadFileFromUrl(string url)
+        private static string GetLastVersion(string assemblyName)
         {
-            using (var client = new WebClient())
+            var request = WebRequest.Create(String.Format("https://raw.githubusercontent.com/kaigan05/LeagueSharp/master/{0}/Properties/AssemblyInfo.cs", assemblyName));
+            var response = request.GetResponse();
+            var data = response.GetResponseStream();
+            string version;
+            using (var sr = new StreamReader(data))
             {
-                using (var stream = client.OpenRead(url))
-                {
-                    using (var reader = new StreamReader(stream))
-                    {
-                        return reader.ReadToEnd();
-                    }
-                }
+                version = sr.ReadToEnd();
             }
+            const string pattern = @"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}";
+            return new Regex(pattern).Match(version).Groups[0].Value;
         }
-        public static bool IsNewVersion(string newVersion)
+        public static bool HasNewVersion(string assemblyName)
         {
-            string curVersion=ReadFile(Path.Combine(LeagueSharpFolder.MainFolder, "version.txt"));
-            var o = curVersion.Split('.');
-            var n=newVersion.Split('.');
-            for (int i = n.Length - 1;i >= 0;  i--)
-            {
-                if (Convert.ToInt32(n[i]) > Convert.ToInt32(o[i]))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString() != GetLastVersion(assemblyName);
         }
     }
 }

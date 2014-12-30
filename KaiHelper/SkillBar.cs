@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -20,7 +18,6 @@ namespace KaiHelper
         public Texture HudTexture;
         public Texture FrameLevelTexture;
         public Texture ButtonRedTexture;
-
         private readonly Dictionary<string, Texture> _summonerSpellTextures =
             new Dictionary<string, Texture>(StringComparer.InvariantCultureIgnoreCase);
 
@@ -63,34 +60,21 @@ namespace KaiHelper
                         OutputPrecision = FontPrecision.Default,
                         Quality = FontQuality.Default,
                     });
-                Drawing.OnPreReset += DrawingOnPreReset;
-                Drawing.OnPostReset += DrawingOnPostReset;
-                AppDomain.CurrentDomain.DomainUnload += CurrentDomainOnDomainUnload;
-                AppDomain.CurrentDomain.ProcessExit += CurrentDomainOnDomainUnload;
+
+                AppDomain.CurrentDomain.DomainUnload += DomainUnload;
+                AppDomain.CurrentDomain.ProcessExit += DomainUnload;
                 CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Oc! " + ex.Message);
+                Console.WriteLine("Opps! " + ex.Message);
             }
         }
 
-        private void CurrentDomainOnDomainUnload(object sender, EventArgs eventArgs)
+        private void DomainUnload(object sender, EventArgs eventArgs)
         {
             SmallText.Dispose();
             Sprite.Dispose();
-        }
-
-        private void DrawingOnPostReset(EventArgs args)
-        {
-            SmallText.OnResetDevice();
-            Sprite.OnResetDevice();
-        }
-
-        private void DrawingOnPreReset(EventArgs args)
-        {
-            SmallText.OnLostDevice();
-            Sprite.OnLostDevice();
         }
 
         private void Game_OnGameLoad(EventArgs args)
@@ -105,15 +89,14 @@ namespace KaiHelper
             }
             foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
             {
-                Console.WriteLine(hero.Name);
-                foreach (var summonerSpellSlot in SummonerSpellSlots)
-                {
-                    SpellDataInst summonerSpell = hero.Spellbook.GetSpell(summonerSpellSlot);
-                    Console.WriteLine(summonerSpell.Name);
-                }
-            }
-            foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
-            {
+                //    Console.WriteLine("+++++++++"+hero.ChampionName);
+                //    for (int index = 0; index < 4; index++)
+                //    {
+                //        SpellSlot spellSlot = SpellSlots[index];
+                //        SpellDataInst summonerSpell = hero.Spellbook.GetSpell(spellSlot);
+                //        Console.WriteLine(summonerSpell.Name);
+                //    }
+                //    Console.WriteLine("---------");
                 foreach (SpellSlot spellSlot in SpellSlots)
                 {
                     if (!_summonerSpellTextures.ContainsKey(hero.ChampionName + "_" + spellSlot))
@@ -151,14 +134,6 @@ namespace KaiHelper
                 _nextTime = Environment.TickCount + 10;
                 try
                 {
-                    if (Drawing.Direct3DDevice == null || Drawing.Direct3DDevice.IsDisposed)
-                    {
-                        return;
-                    }
-                    if (Sprite.IsDisposed)
-                    {
-                        return;
-                    }
                     foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>()
                             .Where(
                                 hero =>
@@ -214,7 +189,6 @@ namespace KaiHelper
                                     }
                                 }
                             }
-
                             Sprite.Draw(
                                 _summonerSpellTextures[hero.ChampionName + "_" + spellSlot],
                                 new ColorBGRA(255, 255, 255, 255), new Rectangle(0, 0, 14, 14),

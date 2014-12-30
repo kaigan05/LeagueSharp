@@ -35,7 +35,7 @@ namespace KaiHelper
             MenuGank.AddItem(new MenuItem("TriggerRange", "Trigger Range").SetValue(new Slider(3000, 1, 3000)));
             MenuGank.AddItem(new MenuItem("CircalRange", "Circal Range").SetValue(new Slider(2500, 1, 3000)));
             //MenuGank.AddItem(new MenuItem("Ping", "Ping").SetValue(new StringList(new[] {"Local Ping", "Server Ping"})));
-            MenuGank.AddItem(new MenuItem("Fill", "Fill").SetValue(true));
+            MenuGank.AddItem(new MenuItem("Fill", "Fill").SetValue(false));
             MenuGank.AddItem(new MenuItem("GankActive", "Active").SetValue(true));
             Game.OnGameUpdate += Game_OnGameUpdate;
             CustomEvents.Game.OnGameLoad += (args =>

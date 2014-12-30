@@ -13,6 +13,7 @@ namespace KaiHelper
             get
             {
                 var configFile = Path.Combine(Config.LeagueSharpDirectory, "config.xml");
+                string result = null;
                 try
                 {
                     if (File.Exists(configFile))
@@ -29,8 +30,7 @@ namespace KaiHelper
                                             element.ChildNodes.Cast<XmlElement>()
                                                 .Any(e => e.Name == "Name" && e.InnerText == "KaiHelper")))
                         {
-                            return
-                                Path.GetDirectoryName(
+                            result=Path.GetDirectoryName(
                                     element.ChildNodes.Cast<XmlElement>()
                                         .First(e => e.Name == "PathToProjectFile")
                                         .InnerText);
@@ -41,7 +41,11 @@ namespace KaiHelper
                 {
                     Console.WriteLine(ee.ToString());
                 }
-                return null;
+                if (result!=null && !Directory.Exists(result))
+                {
+                    Console.WriteLine("My Folder??");
+                }
+                return result;
             }
         }
 

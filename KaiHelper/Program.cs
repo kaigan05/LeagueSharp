@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Reflection;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -22,14 +24,17 @@ namespace KaiHelper
 
         private static void Game_OnGameLoad(EventArgs args)
         {
-            if (Helper.IsNewVersion(Helper.ReadFileFromUrl("https://raw.githubusercontent.com/kaigan05/LeagueSharp/master/KaiHelper/version.txt")))
+            bool hasUpdate = Helper.HasNewVersion(Assembly.GetExecutingAssembly().GetName().Name);
+            Game.PrintChat("-------------------------------------------------------------------------------------------"); 
+            if (hasUpdate)
             {
-                Game.PrintChat("<font color = \"#ff002b\">KaiHelper version is old. Please check for updates!</font>");
+                Game.PrintChat("<font color = \"#ff002b\">A new version of KaiHelper is available. Please check for updates!</font>");
             }
             Game.PrintChat("<font color = \"#00FF2B\">KaiHelper</font> by <font color = \"#FD00FF\">kaigan</font>");
             Game.PrintChat(
                 "<font color = \"#0092FF\">Feel free to donate via Paypal to:</font> <font color = \"#F0FF00\">ntanphat2406@gmail.com</font>");
-            Game.PrintChat("KaiHelper - Loaded");
+            Game.PrintChat("KaiHelper - Loaded!");
+            Game.PrintChat("-------------------------------------------------------------------------------------------"); 
         }
     }
 }
