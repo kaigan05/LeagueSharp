@@ -7,7 +7,7 @@ using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
 
-namespace KaiHelper
+namespace KaiHelper.Tracker
 {
     internal class Ward
     {
@@ -51,11 +51,11 @@ namespace KaiHelper
                 switch (Type)
                 {
                     case WardType.Green:
-                        return new Bitmap(LeagueSharpFolder.MiniMapFolder("ward"));
+                        return new Bitmap(Helper.MiniMapFolder("ward"));
                     case WardType.Pink:
-                        return new Bitmap(LeagueSharpFolder.MiniMapFolder("pink"));
+                        return new Bitmap(Helper.MiniMapFolder("pink"));
                     default:
-                        return new Bitmap(LeagueSharpFolder.MiniMapFolder("ward"));
+                        return new Bitmap(Helper.MiniMapFolder("ward"));
                 }
             }
         }
@@ -179,7 +179,7 @@ namespace KaiHelper
         public WardDetector(Menu config)
         {
             MenuWard = config;
-            MenuWard.AddItem(new MenuItem("WardActive", "Ward Detector")).SetValue(true);
+            MenuWard.AddItem(new MenuItem("WardActive", "Ward")).SetValue(true);
             foreach (GameObject obj in ObjectManager.Get<GameObject>().Where(o => o is Obj_AI_Base))
             {
                 Game_OnCreate(obj, null);

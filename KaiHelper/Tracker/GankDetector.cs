@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
 using Color = System.Drawing.Color;
-using Version = LeagueSharp.Common.Version;
 
-namespace KaiHelper
+namespace KaiHelper.Tracker
 {
     public class Time
     {
@@ -29,7 +25,7 @@ namespace KaiHelper
 
         public GankDetector(Menu config)
         {
-            MenuGank = config.AddSubMenu(new Menu("Gank Detector", "GDetect"));
+            MenuGank = config.AddSubMenu(new Menu("Gank", "GDetect"));
             MenuGank.AddItem(new MenuItem("InvisibleTime", "Invisisble Time").SetValue(new Slider(5, 1, 10)));
             MenuGank.AddItem(new MenuItem("VisibleTime", "Visible Time").SetValue(new Slider(3, 1, 5)));
             MenuGank.AddItem(new MenuItem("TriggerRange", "Trigger Range").SetValue(new Slider(3000, 1, 3000)));

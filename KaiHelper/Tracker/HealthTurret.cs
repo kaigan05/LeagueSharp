@@ -5,7 +5,7 @@ using LeagueSharp.Common;
 using SharpDX;
 using SharpDX.Direct3D9;
 
-namespace KaiHelper
+namespace KaiHelper.Tracker
 {
     internal class HealthTurret
     {

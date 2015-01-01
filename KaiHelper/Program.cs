@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using KaiHelper.Activator;
+using KaiHelper.Tracker;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -8,17 +10,22 @@ namespace KaiHelper
 {
     internal class Program
     {
-        public static Menu Config;
+        public static Menu MainMenu;
 
         private static void Main(string[] args)
         {
-            Config = new Menu("KaiHelper", "KaiHelp", true);
-            new SkillBar(Config);
-            new GankDetector(Config);
-            new WardDetector(Config);
-            new HealthTurret(Config);
-            new JungleTimer(Config);
-            Config.AddToMainMenu();
+            MainMenu = new Menu("KaiHelper", "KaiHelp", true);
+            var ActivatorMenu = MainMenu.AddSubMenu(new Menu("Activator", "Activator"));
+            new AutoPot(ActivatorMenu);
+            var Tracker = MainMenu.AddSubMenu(new Menu("Tracker", "Tracker"));
+            new SkillBar(Tracker);
+            new GankDetector(Tracker);
+            new WayPoint(Tracker);
+            new WardDetector(Tracker);
+            new HealthTurret(Tracker);
+            var Timer = MainMenu.AddSubMenu(new Menu("Timer", "Timer"));
+            new JungleTimer(Timer);
+            MainMenu.AddToMainMenu();
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
         }
 

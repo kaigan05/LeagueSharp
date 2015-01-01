@@ -10,7 +10,7 @@ using SharpDX.Direct3D9;
 using Font = SharpDX.Direct3D9.Font;
 using Rectangle = SharpDX.Rectangle;
 
-namespace KaiHelper
+namespace KaiHelper.Tracker
 {
     public class SkillBar
     {
@@ -37,19 +37,19 @@ namespace KaiHelper
                 HudTexture = Texture.FromMemory(
                     Drawing.Direct3DDevice,
                     (byte[])
-                        new ImageConverter().ConvertTo(new Bitmap(LeagueSharpFolder.HudFolder("main")), typeof(byte[])),
+                        new ImageConverter().ConvertTo(new Bitmap(Helper.HudFolder("main")), typeof(byte[])),
                     127, 41, 0, Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
                 FrameLevelTexture = Texture.FromMemory(
                     Drawing.Direct3DDevice,
                     (byte[])
                         new ImageConverter().ConvertTo(
-                            new Bitmap(LeagueSharpFolder.HudFolder("spell_level")), typeof(byte[])), 2, 3, 0, Usage.None,
+                            new Bitmap(Helper.HudFolder("spell_level")), typeof(byte[])), 2, 3, 0, Usage.None,
                     Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
                 ButtonRedTexture = Texture.FromMemory(
                     Drawing.Direct3DDevice,
                     (byte[])
                         new ImageConverter().ConvertTo(
-                            new Bitmap(LeagueSharpFolder.HudFolder("disable")), typeof(byte[])), 14, 14, 0,
+                            new Bitmap(Helper.HudFolder("disable")), typeof(byte[])), 14, 14, 0,
                     Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
                 SmallText = new Font(
                     Drawing.Direct3DDevice,
@@ -80,7 +80,7 @@ namespace KaiHelper
         private void Game_OnGameLoad(EventArgs args)
         {
             string[] filePaths =
-                Directory.GetFiles(LeagueSharpFolder.SummonerSpellFolder(), "*.png")
+                Directory.GetFiles(Helper.SummonerSpellFolder(), "*.png")
                     .Select(Path.GetFileNameWithoutExtension)
                     .ToArray();
             foreach (var filePath in filePaths.Where(filePath => !_summonerSpellTextures.ContainsKey(filePath)))
@@ -114,12 +114,12 @@ namespace KaiHelper
             Bitmap bitmap;
             if (name != null)
             {
-                bitmap = new Bitmap(LeagueSharpFolder.SummonerSpellFolder(name));
+                bitmap = new Bitmap(Helper.SummonerSpellFolder(name));
                 return Texture.FromMemory(
                     Drawing.Direct3DDevice, (byte[]) new ImageConverter().ConvertTo(bitmap, typeof(byte[])), 12, 240, 0,
                     Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
             }
-            bitmap = new Bitmap(LeagueSharpFolder.SpellFolder(heroName + "_" + spellSlot));
+            bitmap = new Bitmap(Helper.SpellFolder(heroName + "_" + spellSlot));
             return Texture.FromMemory(
                 Drawing.Direct3DDevice, (byte[]) new ImageConverter().ConvertTo(bitmap, typeof(byte[])), 14, 14, 0,
                 Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);

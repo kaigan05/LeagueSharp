@@ -18,7 +18,8 @@ namespace KaiHelper
 
         public JungleTimer(Menu config)
         {
-            _menuJungle = config;
+            _menuJungle = config.AddSubMenu(new Menu("Jungle Timer", "JungleTimer"));
+            _menuJungle.AddItem(new MenuItem("JungleTimerFormat", "Display Format").SetValue(new StringList(new string[] { "m:ss", "ss" })));
             _menuJungle.AddItem(new MenuItem("JungleActive", "Jungle Timer").SetValue(true));
             _jungleCamps.Add(
                 new JungleCamp(
@@ -96,10 +97,10 @@ namespace KaiHelper
             }
             foreach (JungleCamp jungleCamp in _jungleCamps.Where(camp => camp.NextRespawnTime > 0))
             {
-                string timeClock =
-                    (jungleCamp.NextRespawnTime - (int) Game.ClockTime).ToString(CultureInfo.InvariantCulture);
-                Vector2 pos = Drawing.WorldToMinimap(jungleCamp.Position);
-                Helper.DrawText(_miniMapFont, timeClock, (int) pos.X, (int) pos.Y - 8, Color.White);
+                var timeClock =jungleCamp.NextRespawnTime - (int) Game.ClockTime;
+                var time = _menuJungle.Item("JungleTimerFormat").GetValue<StringList>().SelectedIndex == 0 ? Helper.FormatTime(timeClock) : timeClock.ToString(CultureInfo.InvariantCulture);
+                Vector2 pos = Drawing.WorldToMinimap(jungleCamp.Position); 
+                Helper.DrawText(_miniMapFont, time, (int)pos.X, (int)pos.Y - 8, Color.White);
             }
         }
 
@@ -111,10 +112,10 @@ namespace KaiHelper
             }
             foreach (JungleCamp jungleCamp in _jungleCamps.Where(camp => camp.NextRespawnTime > 0))
             {
-                string timeClock =
-                    (jungleCamp.NextRespawnTime - (int) Game.ClockTime).ToString(CultureInfo.InvariantCulture);
+                var timeClock = jungleCamp.NextRespawnTime - (int)Game.ClockTime;
+                var time = _menuJungle.Item("JungleTimerFormat").GetValue<StringList>().SelectedIndex == 0 ? Helper.FormatTime(timeClock) : timeClock.ToString(CultureInfo.InvariantCulture);
                 Vector2 pos = Drawing.WorldToScreen(jungleCamp.Position);
-                Helper.DrawText(_mapFont, timeClock, (int) pos.X, (int) pos.Y - 15, Color.White);
+                Helper.DrawText(_mapFont, time, (int)pos.X, (int)pos.Y - 15, Color.White);
             }
         }
         private void Game_OnGameUpdate(EventArgs args)
