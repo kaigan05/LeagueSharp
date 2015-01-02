@@ -17,22 +17,27 @@ namespace KaiHelper
         {
             get
             {
-                string directory = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"LeagueSharp\Repositories");
-                return Directory.GetDirectories(directory, "KaiHelper", SearchOption.AllDirectories).First();
-                //try
-                //{
-                //    var configFile = Path.Combine(Config.LeagueSharpDirectory, "config.xml");
-                //    var config = new XmlDocument();
-                //    config.Load(configFile);
-                //    var node = config.DocumentElement.SelectSingleNode("/Config/SelectedProfile/InstalledAssemblies");
-                //    var kainode = node.ChildNodes.Cast<XmlElement>().First(element => element.ChildNodes.Cast<XmlElement>().Any(e => e.Name == "Name" && e.InnerText == "KaiHelper"));
-                //    return Path.GetDirectoryName(kainode.ChildNodes.Cast<XmlElement>().First(e => e.Name == "PathToProjectFile").InnerText);
-                //}
-                //catch (Exception)
-                //{
-                    
-                //}
+                string result = null;
+                var configFile = Path.Combine(Config.LeagueSharpDirectory, "config.xml");
+                if (File.Exists(configFile))
+                {
+                    var config = new XmlDocument();
+                    config.Load(configFile);
+                    var node = config.DocumentElement.SelectSingleNode("/Config/SelectedProfile/InstalledAssemblies");
+                    foreach (XmlElement kainode in node.ChildNodes.Cast<XmlElement>().Where(element => element.Name == "Name" && element.InnerText == "KaiHelper")) {
+                        result =Path.GetDirectoryName(kainode.ChildNodes.Cast<XmlElement>().First(e => e.Name == "PathToProjectFile")
+                            .InnerText);
+                        break;
+                    }
+                }
+                if (result==null)
+                {
+                    string directory = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        @"LeagueSharp\Repositories");
+                    result = Directory.GetDirectories(directory, "KaiHelper", SearchOption.AllDirectories).First();
+                }
+                return result;
             }
         }
 
