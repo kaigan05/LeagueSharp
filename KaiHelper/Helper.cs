@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Xml;
+using LeagueSharp.Common;
 using SharpDX;
 using SharpDX.Direct3D9;
 
@@ -15,9 +17,17 @@ namespace KaiHelper
         {
             get
             {
+                var configFile = Path.Combine(Config.LeagueSharpDirectory, "config.xml");
+                var config = new XmlDocument();
+                config.Load(configFile);
+                var node = config.DocumentElement.SelectSingleNode("/Config/SelectedProfile/InstalledAssemblies");
+                var kainode = node.ChildNodes.Cast<XmlElement>().First( element => element.ChildNodes.Cast<XmlElement>().Any(e => e.Name == "Name" && e.InnerText == "KaiHelper"));
+                string result = Path.GetDirectoryName(kainode.ChildNodes.Cast<XmlElement>().First(e => e.Name == "PathToProjectFile").InnerText);
+                if (result != String.Empty)
+                    return result;
                 string directory = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"LeagueSharp\Repositories");
-                return Directory.GetDirectories(directory, "KaiHelper", SearchOption.AllDirectories).First();
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"LeagueSharp\Repositories");
+                    return Directory.GetDirectories(directory, "KaiHelper", SearchOption.AllDirectories).First();
             }
         }
 

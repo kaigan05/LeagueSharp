@@ -29,8 +29,8 @@ namespace KaiHelper.Tracker
                     Quality = FontQuality.Default,
                 });
             _menu = menu.AddSubMenu(new Menu("Waypoint", "WaypointTracker"));
-            _menu.AddItem(new MenuItem("AWPMiniMap", "On MiniMap").SetValue(true));
-            _menu.AddItem(new MenuItem("AWPMap", "Active").SetValue(true));
+            _menu.AddItem(new MenuItem("AWPMiniMap", "On MiniMap").SetValue(false));
+            _menu.AddItem(new MenuItem("AWPMap", "Active").SetValue(false));
             Drawing.OnEndScene += Drawing_OnDraw;
         }
 
