@@ -12,10 +12,10 @@ namespace KaiHelper.Tracker
     internal class Ward
     {
         private const float Scale = 0.7f;
+        private readonly WardDetector _wardDetector;
         private Render.Circle _circle;
         private Render.Sprite _minimapSprite;
         private Render.Text _timerText;
-        private readonly WardDetector _wardDetector;
 
         public Ward(string skinName, int startTime, Obj_AI_Base objAiBase, WardDetector wardDetector)
         {
@@ -205,7 +205,10 @@ namespace KaiHelper.Tracker
                 return;
             }
             Obj_AI_Base objAiBase = @base;
-            if (objAiBase.IsAlly) return;
+            if (objAiBase.IsAlly)
+            {
+                return;
+            }
             if (!Ward.IsWard(objAiBase.SkinName))
             {
                 return;

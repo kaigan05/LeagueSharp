@@ -14,17 +14,19 @@ namespace KaiHelper.Tracker
 {
     public class SkillBar
     {
-        public Sprite Sprite;
-        public Texture HudTexture;
-        public Texture FrameLevelTexture;
-        public Texture ButtonRedTexture;
         private readonly Dictionary<string, Texture> _summonerSpellTextures =
             new Dictionary<string, Texture>(StringComparer.InvariantCultureIgnoreCase);
 
-        public Font SmallText;
-        public SpellSlot[] SummonerSpellSlots = { SpellSlot.Summoner1, SpellSlot.Summoner2 };
-        public SpellSlot[] SpellSlots = { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R };
+        public Texture ButtonRedTexture;
+        public Texture FrameLevelTexture;
+        public Texture HudTexture;
         public Menu MenuSkillBar;
+
+        public Font SmallText;
+        public SpellSlot[] SpellSlots = { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R };
+        public Sprite Sprite;
+        public SpellSlot[] SummonerSpellSlots = { SpellSlot.Summoner1, SpellSlot.Summoner2 };
+        private int _nextTime;
 
         public SkillBar(Menu config)
         {
@@ -36,21 +38,16 @@ namespace KaiHelper.Tracker
                 Sprite = new Sprite(Drawing.Direct3DDevice);
                 HudTexture = Texture.FromMemory(
                     Drawing.Direct3DDevice,
-                    (byte[])
-                        new ImageConverter().ConvertTo(new Bitmap(Helper.HudFolder("main")), typeof(byte[])),
-                    127, 41, 0, Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
+                    (byte[]) new ImageConverter().ConvertTo(new Bitmap(Helper.HudFolder("main")), typeof(byte[])), 127,
+                    41, 0, Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
                 FrameLevelTexture = Texture.FromMemory(
                     Drawing.Direct3DDevice,
-                    (byte[])
-                        new ImageConverter().ConvertTo(
-                            new Bitmap(Helper.HudFolder("spell_level")), typeof(byte[])), 2, 3, 0, Usage.None,
-                    Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
+                    (byte[]) new ImageConverter().ConvertTo(new Bitmap(Helper.HudFolder("spell_level")), typeof(byte[])),
+                    2, 3, 0, Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
                 ButtonRedTexture = Texture.FromMemory(
                     Drawing.Direct3DDevice,
-                    (byte[])
-                        new ImageConverter().ConvertTo(
-                            new Bitmap(Helper.HudFolder("disable")), typeof(byte[])), 14, 14, 0,
-                    Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
+                    (byte[]) new ImageConverter().ConvertTo(new Bitmap(Helper.HudFolder("disable")), typeof(byte[])), 14,
+                    14, 0, Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
                 SmallText = new Font(
                     Drawing.Direct3DDevice,
                     new FontDescription
@@ -83,7 +80,7 @@ namespace KaiHelper.Tracker
                 Directory.GetFiles(Helper.SummonerSpellFolder(), "*.png")
                     .Select(Path.GetFileNameWithoutExtension)
                     .ToArray();
-            foreach (var filePath in filePaths.Where(filePath => !_summonerSpellTextures.ContainsKey(filePath)))
+            foreach (string filePath in filePaths.Where(filePath => !_summonerSpellTextures.ContainsKey(filePath)))
             {
                 _summonerSpellTextures.Add(filePath, GetTexture(null, SpellSlot.Summoner2, filePath));
             }
@@ -125,8 +122,6 @@ namespace KaiHelper.Tracker
                 Usage.None, Format.A1, Pool.Managed, Filter.Default, Filter.Default, 0);
         }
 
-        private int _nextTime;
-
         private void Drawing_OnDraw(EventArgs args)
         {
             if (Environment.TickCount - _nextTime >= 0)
@@ -134,12 +129,14 @@ namespace KaiHelper.Tracker
                 _nextTime = Environment.TickCount + 10;
                 try
                 {
-                    foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(
-                                hero =>
-                                    hero.IsValid && !hero.IsDead && !hero.IsMe && hero.IsHPBarRendered &&
-                                    (hero.IsEnemy && MenuSkillBar.Item("OnEnemies").GetValue<bool>() ||
-                                     hero.IsAlly && MenuSkillBar.Item("OnAllies").GetValue<bool>())))
+                    foreach (
+                        Obj_AI_Hero hero in
+                            ObjectManager.Get<Obj_AI_Hero>()
+                                .Where(
+                                    hero =>
+                                        hero.IsValid && !hero.IsDead && !hero.IsMe && hero.IsHPBarRendered &&
+                                        (hero.IsEnemy && MenuSkillBar.Item("OnEnemies").GetValue<bool>() ||
+                                         hero.IsAlly && MenuSkillBar.Item("OnAllies").GetValue<bool>())))
                     {
                         Vector2 skillStateBarPos;
                         if (hero.IsEnemy)

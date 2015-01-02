@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using Color = System.Drawing.Color;
 
 namespace KaiHelper.Tracker
 {
@@ -20,8 +20,8 @@ namespace KaiHelper.Tracker
 
     public class GankDetector
     {
-        public Menu MenuGank;
         private readonly Dictionary<Obj_AI_Hero, Time> _enemies = new Dictionary<Obj_AI_Hero, Time>();
+        public Menu MenuGank;
 
         public GankDetector(Menu config)
         {

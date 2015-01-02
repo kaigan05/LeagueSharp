@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
 using KaiHelper.Activator;
 using KaiHelper.Tracker;
@@ -15,15 +14,15 @@ namespace KaiHelper
         private static void Main(string[] args)
         {
             MainMenu = new Menu("KaiHelper", "KaiHelp", true);
-            var ActivatorMenu = MainMenu.AddSubMenu(new Menu("Activator", "Activator"));
+            Menu ActivatorMenu = MainMenu.AddSubMenu(new Menu("Activator", "Activator"));
             new AutoPot(ActivatorMenu);
-            var Tracker = MainMenu.AddSubMenu(new Menu("Tracker", "Tracker"));
+            Menu Tracker = MainMenu.AddSubMenu(new Menu("Tracker", "Tracker"));
             new SkillBar(Tracker);
             new GankDetector(Tracker);
             new WayPoint(Tracker);
             new WardDetector(Tracker);
             new HealthTurret(Tracker);
-            var Timer = MainMenu.AddSubMenu(new Menu("Timer", "Timer"));
+            Menu Timer = MainMenu.AddSubMenu(new Menu("Timer", "Timer"));
             new JungleTimer(Timer);
             MainMenu.AddToMainMenu();
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
@@ -32,16 +31,19 @@ namespace KaiHelper
         private static void Game_OnGameLoad(EventArgs args)
         {
             bool hasUpdate = Helper.HasNewVersion(Assembly.GetExecutingAssembly().GetName().Name);
-            Game.PrintChat("-------------------------------------------------------------------------------------------"); 
+            Game.PrintChat(
+                "-------------------------------------------------------------------------------------------");
             if (hasUpdate)
             {
-                Game.PrintChat("<font color = \"#ff002b\">A new version of KaiHelper is available. Please check for updates!</font>");
+                Game.PrintChat(
+                    "<font color = \"#ff002b\">A new version of KaiHelper is available. Please check for updates!</font>");
             }
             Game.PrintChat("<font color = \"#00FF2B\">KaiHelper</font> by <font color = \"#FD00FF\">kaigan</font>");
             Game.PrintChat(
                 "<font color = \"#0092FF\">Feel free to donate via Paypal to:</font> <font color = \"#F0FF00\">ntanphat2406@gmail.com</font>");
             Game.PrintChat("KaiHelper - Loaded!");
-            Game.PrintChat("-------------------------------------------------------------------------------------------"); 
+            Game.PrintChat(
+                "-------------------------------------------------------------------------------------------");
         }
     }
 }

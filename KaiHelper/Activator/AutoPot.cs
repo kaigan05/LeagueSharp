@@ -4,9 +4,10 @@ using LeagueSharp.Common;
 
 namespace KaiHelper.Activator
 {
-    class AutoPot
+    internal class AutoPot
     {
         private readonly Menu _menu;
+
         public AutoPot(Menu menu)
         {
             _menu = menu.AddSubMenu(new Menu("Potion Manager", "PotionManager"));
@@ -14,7 +15,8 @@ namespace KaiHelper.Activator
             _menu.AddItem(new MenuItem("HealthPotion", "Health Potion").SetValue(true));
             _menu.AddItem(new MenuItem("MPTrigger", "MP Trigger Percent").SetValue(new Slider(30)));
             _menu.AddItem(new MenuItem("ManaPotion", "Mana Potion").SetValue(true));
-            var autoarrangeMenu = _menu.AddItem(new MenuItem("AutoArrange", "Auto Arrange").DontSave().SetValue(false));
+            MenuItem autoarrangeMenu =
+                _menu.AddItem(new MenuItem("AutoArrange", "Auto Arrange").DontSave().SetValue(false));
             autoarrangeMenu.ValueChanged += AutoRangeValueChanged;
             Game.OnGameUpdate += Game_OnGameUpdate;
         }
@@ -25,38 +27,44 @@ namespace KaiHelper.Activator
             {
                 return;
             }
-            _menu.Item("HPTrigger").SetValue(new Slider(FomularPercent((int)ObjectManager.Player.MaxHealth, 150), 1, 99));
+            _menu.Item("HPTrigger")
+                .SetValue(new Slider(FomularPercent((int) ObjectManager.Player.MaxHealth, 150), 1, 99));
             Console.WriteLine(ObjectManager.Player.MaxMana);
             if (ObjectManager.Player.MaxMana <= 0)
             {
                 _menu.Item("HealthPotion").SetValue(false);
-            }else
-            _menu.Item("MPTrigger").SetValue(new Slider(FomularPercent((int)ObjectManager.Player.MaxMana, 100), 1, 99));
+            }
+            else
+            {
+                _menu.Item("MPTrigger")
+                    .SetValue(new Slider(FomularPercent((int) ObjectManager.Player.MaxMana, 100), 1, 99));
+            }
         }
 
-        private int FomularPercent(int max,int cur)
+        private int FomularPercent(int max, int cur)
         {
-            return (int) (100 - ((cur*1.0)/ max) * 100);
+            return (int) (100 - ((cur * 1.0) / max) * 100);
         }
-        void Game_OnGameUpdate(EventArgs args)
+
+        private void Game_OnGameUpdate(EventArgs args)
         {
-            if (ObjectManager.Player.IsDead ||
-                ObjectManager.Player.InFountain() ||
+            if (ObjectManager.Player.IsDead || ObjectManager.Player.InFountain() ||
                 ObjectManager.Player.HasBuff("Recall"))
             {
                 return;
             }
-            var hasItemCrystalFlask = Items.HasItem(2041);
-            var buffItemCrystalFlask=false;
+            bool hasItemCrystalFlask = Items.HasItem(2041);
+            bool buffItemCrystalFlask = false;
             if (_menu.Item("HealthPotion").GetValue<bool>())
             {
-                var hasItemMiniRegenPotion = Items.HasItem(2010);
-                var hasHealthPotion = Items.HasItem(2003);
+                bool hasItemMiniRegenPotion = Items.HasItem(2010);
+                bool hasHealthPotion = Items.HasItem(2003);
                 if (ObjectManager.Player.HealthPercentage() <= _menu.Item("HPTrigger").GetValue<Slider>().Value)
                 {
                     if (hasItemCrystalFlask)
                     {
-                        if (ObjectManager.Player.ManaPercentage() <= _menu.Item("MPTrigger").GetValue<Slider>().Value||!hasHealthPotion && !hasItemMiniRegenPotion)
+                        if (ObjectManager.Player.ManaPercentage() <= _menu.Item("MPTrigger").GetValue<Slider>().Value ||
+                            !hasHealthPotion && !hasItemMiniRegenPotion)
                         {
                             UseItem(2041, "ItemCrystalFlask");
                             buffItemCrystalFlask = true;
@@ -81,7 +89,9 @@ namespace KaiHelper.Activator
                 }
             }
             if (buffItemCrystalFlask)
+            {
                 return;
+            }
             if (!_menu.Item("ManaPotion").GetValue<bool>())
             {
                 return;
@@ -90,7 +100,7 @@ namespace KaiHelper.Activator
             {
                 return;
             }
-            var hasManaPotion = Items.HasItem(2004);
+            bool hasManaPotion = Items.HasItem(2004);
             if (hasManaPotion)
             {
                 UseItem(2004, "Mana Potion");
@@ -101,10 +111,12 @@ namespace KaiHelper.Activator
             }
         }
 
-        private static void UseItem(int id,string displayName)
+        private static void UseItem(int id, string displayName)
         {
-            if(!ObjectManager.Player.HasBuff(displayName))
+            if (!ObjectManager.Player.HasBuff(displayName))
+            {
                 Items.UseItem(id);
+            }
         }
     }
 }

@@ -9,8 +9,8 @@ namespace KaiHelper.Tracker
 {
     internal class HealthTurret
     {
-        public Font Text;
         public Menu MenuHealthTurret;
+        public Font Text;
 
         public HealthTurret(Menu config)
         {
@@ -42,7 +42,7 @@ namespace KaiHelper.Tracker
             {
                 return;
             }
-            foreach (var turret in ObjectManager.Get<Obj_AI_Turret>())
+            foreach (Obj_AI_Turret turret in ObjectManager.Get<Obj_AI_Turret>())
             {
                 if ((turret.HealthPercentage() == 100))
                 {
@@ -79,10 +79,11 @@ namespace KaiHelper.Tracker
                 }
                 else if (perHealth < 25)
                 {
-                    Helper.DrawText(Text, health.ToString(CultureInfo.InvariantCulture), (int)pos[0], (int)pos[1], Color.Red);
+                    Helper.DrawText(
+                        Text, health.ToString(CultureInfo.InvariantCulture), (int) pos[0], (int) pos[1], Color.Red);
                 }
             }
-            foreach (var inhibitor in ObjectManager.Get<Obj_BarracksDampener>())
+            foreach (Obj_BarracksDampener inhibitor in ObjectManager.Get<Obj_BarracksDampener>())
             {
                 if (inhibitor.Health != 0 && (inhibitor.Health / inhibitor.MaxHealth) * 100 != 100)
                 {

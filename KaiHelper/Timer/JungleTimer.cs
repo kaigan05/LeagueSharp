@@ -12,14 +12,16 @@ namespace KaiHelper
     public class JungleTimer
     {
         private readonly List<JungleCamp> _jungleCamps = new List<JungleCamp>();
-        private readonly Font _miniMapFont;
         private readonly Font _mapFont;
+        private readonly Menu _menuJungle;
+        private readonly Font _miniMapFont;
         private int _nextTime;
 
         public JungleTimer(Menu config)
         {
             _menuJungle = config.AddSubMenu(new Menu("Jungle Timer", "JungleTimer"));
-            _menuJungle.AddItem(new MenuItem("JungleTimerFormat", "Display Format").SetValue(new StringList(new string[] { "m:ss", "ss" })));
+            _menuJungle.AddItem(
+                new MenuItem("JungleTimerFormat", "Display Format").SetValue(new StringList(new[] { "m:ss", "ss" })));
             _menuJungle.AddItem(new MenuItem("JungleActive", "Jungle Timer").SetValue(true));
             _jungleCamps.Add(
                 new JungleCamp(
@@ -97,10 +99,12 @@ namespace KaiHelper
             }
             foreach (JungleCamp jungleCamp in _jungleCamps.Where(camp => camp.NextRespawnTime > 0))
             {
-                var timeClock =jungleCamp.NextRespawnTime - (int) Game.ClockTime;
-                var time = _menuJungle.Item("JungleTimerFormat").GetValue<StringList>().SelectedIndex == 0 ? Helper.FormatTime(timeClock) : timeClock.ToString(CultureInfo.InvariantCulture);
-                Vector2 pos = Drawing.WorldToMinimap(jungleCamp.Position); 
-                Helper.DrawText(_miniMapFont, time, (int)pos.X, (int)pos.Y - 8, Color.White);
+                int timeClock = jungleCamp.NextRespawnTime - (int) Game.ClockTime;
+                string time = _menuJungle.Item("JungleTimerFormat").GetValue<StringList>().SelectedIndex == 0
+                    ? Helper.FormatTime(timeClock)
+                    : timeClock.ToString(CultureInfo.InvariantCulture);
+                Vector2 pos = Drawing.WorldToMinimap(jungleCamp.Position);
+                Helper.DrawText(_miniMapFont, time, (int) pos.X, (int) pos.Y - 8, Color.White);
             }
         }
 
@@ -112,12 +116,15 @@ namespace KaiHelper
             }
             foreach (JungleCamp jungleCamp in _jungleCamps.Where(camp => camp.NextRespawnTime > 0))
             {
-                var timeClock = jungleCamp.NextRespawnTime - (int)Game.ClockTime;
-                var time = _menuJungle.Item("JungleTimerFormat").GetValue<StringList>().SelectedIndex == 0 ? Helper.FormatTime(timeClock) : timeClock.ToString(CultureInfo.InvariantCulture);
+                int timeClock = jungleCamp.NextRespawnTime - (int) Game.ClockTime;
+                string time = _menuJungle.Item("JungleTimerFormat").GetValue<StringList>().SelectedIndex == 0
+                    ? Helper.FormatTime(timeClock)
+                    : timeClock.ToString(CultureInfo.InvariantCulture);
                 Vector2 pos = Drawing.WorldToScreen(jungleCamp.Position);
-                Helper.DrawText(_mapFont, time, (int)pos.X, (int)pos.Y - 15, Color.White);
+                Helper.DrawText(_mapFont, time, (int) pos.X, (int) pos.Y - 15, Color.White);
             }
         }
+
         private void Game_OnGameUpdate(EventArgs args)
         {
             if (!IsActive())
@@ -127,11 +134,11 @@ namespace KaiHelper
             if ((int) Game.ClockTime - _nextTime >= 0)
             {
                 _nextTime = (int) Game.ClockTime + 1;
-                var minions =
+                IEnumerable<Obj_AI_Base> minions =
                     ObjectManager.Get<Obj_AI_Base>()
                         .Where(minion => !minion.IsDead && minion.IsValid && minion.Name.ToUpper().StartsWith("SRU"));
 
-                var junglesAlive =
+                IEnumerable<JungleCamp> junglesAlive =
                     _jungleCamps.Where(
                         jungle =>
                             !jungle.IsDead &&
@@ -140,11 +147,11 @@ namespace KaiHelper
                                     minions.Where(minion => minion.Name == s)
                                         .Select(minion => minion.Name)
                                         .FirstOrDefault() != null));
-                foreach (var jungle in junglesAlive)
+                foreach (JungleCamp jungle in junglesAlive)
                 {
                     jungle.Visibled = true;
                 }
-                var junglesDead =
+                IEnumerable<JungleCamp> junglesDead =
                     _jungleCamps.Where(
                         jungle =>
                             !jungle.IsDead && jungle.Visibled &&
@@ -153,7 +160,7 @@ namespace KaiHelper
                                     minions.Where(minion => minion.Name == s)
                                         .Select(minion => minion.Name)
                                         .FirstOrDefault() == null));
-                foreach (var jungle in junglesDead)
+                foreach (JungleCamp jungle in junglesDead)
                 {
                     jungle.IsDead = true;
                     jungle.Visibled = false;
@@ -168,15 +175,20 @@ namespace KaiHelper
             }
         }
 
+        private bool IsActive()
+        {
+            return _menuJungle.Item("JungleActive").GetValue<bool>();
+        }
+
         public class JungleCamp
         {
-            public String Name;
-            public int NextRespawnTime;
-            public int RespawnTime;
             public bool IsDead;
-            public bool Visibled;
-            public Vector3 Position;
+            public String Name;
             public string[] Names;
+            public int NextRespawnTime;
+            public Vector3 Position;
+            public int RespawnTime;
+            public bool Visibled;
 
             public JungleCamp(String name, int respawnTime, Vector3 position, string[] names)
             {
@@ -188,12 +200,5 @@ namespace KaiHelper
                 Visibled = false;
             }
         }
-
-        private bool IsActive()
-        {
-            return _menuJungle.Item("JungleActive").GetValue<bool>();
-        }
-
-        private readonly Menu _menuJungle;
     }
 }
