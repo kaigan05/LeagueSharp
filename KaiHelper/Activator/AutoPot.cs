@@ -32,7 +32,7 @@ namespace KaiHelper.Activator
             Console.WriteLine(ObjectManager.Player.MaxMana);
             if (ObjectManager.Player.MaxMana <= 0)
             {
-                _menu.Item("HealthPotion").SetValue(false);
+                _menu.Item("ManaPotion").SetValue(false);
             }
             else
             {

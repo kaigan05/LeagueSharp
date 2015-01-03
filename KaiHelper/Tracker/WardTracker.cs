@@ -51,11 +51,11 @@ namespace KaiHelper.Tracker
                 switch (Type)
                 {
                     case WardType.Green:
-                        return new Bitmap(Helper.MiniMapFolder("ward"));
+                        return _wardDetector.Ward;
                     case WardType.Pink:
-                        return new Bitmap(Helper.MiniMapFolder("pink"));
+                        return _wardDetector.Pink;
                     default:
-                        return new Bitmap(Helper.MiniMapFolder("ward"));
+                        return _wardDetector.Ward;
                 }
             }
         }
@@ -175,11 +175,13 @@ namespace KaiHelper.Tracker
     {
         private readonly List<Ward> _detectedWards = new List<Ward>();
         public Menu MenuWard;
-
+        public Bitmap Ward = new Bitmap(Helper.MiniMapFolder("ward"));
+        public Bitmap Pink = new Bitmap(Helper.MiniMapFolder("pink"));
         public WardDetector(Menu config)
         {
             MenuWard = config;
             MenuWard.AddItem(new MenuItem("WardActive", "Ward")).SetValue(true);
+            
             foreach (GameObject obj in ObjectManager.Get<GameObject>().Where(o => o is Obj_AI_Base))
             {
                 Game_OnCreate(obj, null);
@@ -209,7 +211,7 @@ namespace KaiHelper.Tracker
             {
                 return;
             }
-            if (!Ward.IsWard(objAiBase.SkinName))
+            if (!Tracker.Ward.IsWard(objAiBase.SkinName))
             {
                 return;
             }
@@ -227,7 +229,7 @@ namespace KaiHelper.Tracker
         }
     }
 
-    internal enum WardType
+    public enum WardType
     {
         None,
         Green,
