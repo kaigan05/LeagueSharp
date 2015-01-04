@@ -5,6 +5,7 @@ using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml;
+using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using SharpDX.Direct3D9;
@@ -73,6 +74,11 @@ namespace KaiHelper
             font.DrawText(null, text, posX + rec.X, posY, color);
         }
 
+        public static bool UnitTrenManHinh(Obj_AI_Base o)
+        {
+            var viTri = Drawing.WorldToScreen(o.Position);
+            return viTri.X > 0 && viTri.X < Drawing.Width && viTri.Y > 0 && viTri.Y < Drawing.Height;
+        }
         public static string FormatTime(double time)
         {
             TimeSpan t = TimeSpan.FromSeconds(time);

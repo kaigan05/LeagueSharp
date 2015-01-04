@@ -24,6 +24,8 @@ namespace KaiHelper
             new HealthTurret(Tracker);
             Menu Timer = MainMenu.AddSubMenu(new Menu("Timer", "Timer"));
             new JungleTimer(Timer);
+            Menu Range = MainMenu.AddSubMenu(new Menu("Range", "Range"));
+            new Vision(Range);
             MainMenu.AddToMainMenu();
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
         }
