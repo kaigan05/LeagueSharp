@@ -26,7 +26,7 @@ namespace KaiHelper.Tracker
         public SpellSlot[] SpellSlots = { SpellSlot.Q, SpellSlot.W, SpellSlot.E, SpellSlot.R };
         public Sprite Sprite;
         public SpellSlot[] SummonerSpellSlots = { SpellSlot.Summoner1, SpellSlot.Summoner2 };
-        private int _nextTime;
+        //private int _nextTime;
 
         public SkillBar(Menu config)
         {
@@ -124,9 +124,9 @@ namespace KaiHelper.Tracker
 
         private void Drawing_OnDraw(EventArgs args)
         {
-            if (Environment.TickCount - _nextTime >= 0)
-            {
-                _nextTime = Environment.TickCount + 10;
+            //if (Environment.TickCount - _nextTime >= 0)
+            //{
+            //    _nextTime = Environment.TickCount + 10;
                 try
                 {
                     foreach (
@@ -221,4 +221,3 @@ namespace KaiHelper.Tracker
             }
         }
     }
-}

@@ -48,66 +48,66 @@ namespace KaiHelper.Activator
 
         private void Game_OnGameUpdate(EventArgs args)
         {
-            if (ObjectManager.Player.IsDead || ObjectManager.Player.InFountain() ||
-                ObjectManager.Player.HasBuff("Recall"))
+            if (!ObjectManager.Player.IsDead && !ObjectManager.Player.InFountain() &&
+                !ObjectManager.Player.HasBuff("Recall"))
             {
-                return;
-            }
-            bool hasItemCrystalFlask = Items.HasItem(2041);
-            bool buffItemCrystalFlask = false;
-            if (_menu.Item("HealthPotion").GetValue<bool>())
-            {
-                bool hasItemMiniRegenPotion = Items.HasItem(2010);
-                bool hasHealthPotion = Items.HasItem(2003);
-                if (ObjectManager.Player.HealthPercentage() <= _menu.Item("HPTrigger").GetValue<Slider>().Value)
+                bool hasItemCrystalFlask = Items.HasItem(2041);
+                bool buffItemCrystalFlask = false;
+                if (_menu.Item("HealthPotion").GetValue<bool>())
                 {
-                    if (hasItemCrystalFlask)
+                    bool hasItemMiniRegenPotion = Items.HasItem(2010);
+                    bool hasHealthPotion = Items.HasItem(2003);
+                    if (ObjectManager.Player.HealthPercentage() <= _menu.Item("HPTrigger").GetValue<Slider>().Value)
                     {
-                        if (ObjectManager.Player.ManaPercentage() <= _menu.Item("MPTrigger").GetValue<Slider>().Value ||
-                            !hasHealthPotion && !hasItemMiniRegenPotion)
+                        if (hasItemCrystalFlask)
                         {
-                            UseItem(2041, "ItemCrystalFlask");
-                            buffItemCrystalFlask = true;
+                            if (ObjectManager.Player.ManaPercentage() <=
+                                _menu.Item("MPTrigger").GetValue<Slider>().Value ||
+                                !hasHealthPotion && !hasItemMiniRegenPotion)
+                            {
+                                UseItem(2041, "ItemCrystalFlask");
+                                buffItemCrystalFlask = true;
+                            }
+                            else if (hasHealthPotion)
+                            {
+                                UseItem(2003, "Health Potion");
+                            }
+                            else
+                            {
+                                UseItem(2010, "ItemMiniRegenPotion");
+                            }
                         }
                         else if (hasHealthPotion)
                         {
                             UseItem(2003, "Health Potion");
                         }
-                        else
+                        else if (hasItemMiniRegenPotion)
                         {
                             UseItem(2010, "ItemMiniRegenPotion");
                         }
                     }
-                    else if (hasHealthPotion)
-                    {
-                        UseItem(2003, "Health Potion");
-                    }
-                    else if (hasItemMiniRegenPotion)
-                    {
-                        UseItem(2010, "ItemMiniRegenPotion");
-                    }
                 }
-            }
-            if (buffItemCrystalFlask)
-            {
-                return;
-            }
-            if (!_menu.Item("ManaPotion").GetValue<bool>())
-            {
-                return;
-            }
-            if (!(ObjectManager.Player.ManaPercentage() <= _menu.Item("MPTrigger").GetValue<Slider>().Value))
-            {
-                return;
-            }
-            bool hasManaPotion = Items.HasItem(2004);
-            if (hasManaPotion)
-            {
-                UseItem(2004, "Mana Potion");
-            }
-            else if (hasItemCrystalFlask)
-            {
-                UseItem(2041, "ItemCrystalFlask");
+                if (buffItemCrystalFlask)
+                {
+                    return;
+                }
+                if (!_menu.Item("ManaPotion").GetValue<bool>())
+                {
+                    return;
+                }
+                if (!(ObjectManager.Player.ManaPercentage() <= _menu.Item("MPTrigger").GetValue<Slider>().Value))
+                {
+                    return;
+                }
+                bool hasManaPotion = Items.HasItem(2004);
+                if (hasManaPotion)
+                {
+                    UseItem(2004, "Mana Potion");
+                }
+                else if (hasItemCrystalFlask)
+                {
+                    UseItem(2041, "ItemCrystalFlask");
+                }
             }
         }
 

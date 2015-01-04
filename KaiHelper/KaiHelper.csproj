@@ -51,10 +51,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-<Reference Include="System.Xml" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activator\AutoPot.cs" />
+    <Compile Include="Activator\Protector.cs" />
     <Compile Include="Tracker\WayPoint.cs" />
     <Compile Include="Tracker\GankDetector.cs" />
     <Compile Include="Tracker\HealthTurret.cs" />
