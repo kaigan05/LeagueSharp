@@ -5,7 +5,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 
-namespace Enemy_Vision
+namespace EnemyVision
 {
     internal class Vision
     {
@@ -19,8 +19,15 @@ namespace Enemy_Vision
             _menu.AddItem(new MenuItem("TrenManHinh", "Only draw when enemys on screen").SetValue(false));
             _menu.AddItem(new MenuItem("VongTron", "Only Circle").SetValue(false));
             _menu.AddItem(new MenuItem("NguoiChoiTest", "Test by me").SetValue(false));
-            _menu.AddItem(new MenuItem("Active", "Active").SetValue(false));
+            _menu.AddItem(new MenuItem("Active", "Active").SetValue(true));
             _menu.AddToMainMenu();
+            CustomEvents.Game.OnGameLoad += Game_Onload;
+            
+        }
+
+        private void Game_Onload(EventArgs args)
+        {
+            Game.PrintChat("<font color = \"#00FF2B\">Enemy vision</font> by kaigan <font color = \"#FD00FF\">Loaded!</font>");
             Drawing.OnDraw += Game_OnDraw;
         }
 

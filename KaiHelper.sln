@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KaiHelper", "KaiHelper\KaiH
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImmortalVayne", "..\..\..\..\Desktop\ImmortalVayne\ImmortalVayne\ImmortalVayne.csproj", "{9D959F9F-672D-44E5-94CC-DB54F5598BFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Enemy Vision", "Enemy Vision\Enemy Vision.csproj", "{C34DD657-EBB3-432B-A713-98F1299E8E69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnemyVision", "EnemyVision\EnemyVision.csproj", "{C34DD657-EBB3-432B-A713-98F1299E8E69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,4 @@
-﻿using LeagueSharp.Common;
-
-namespace Enemy_Vision
+﻿namespace EnemyVision
 {
     class Program
     {

@@ -8,8 +8,8 @@
     <ProjectGuid>{C34DD657-EBB3-432B-A713-98F1299E8E69}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Enemy_Vision</RootNamespace>
-    <AssemblyName>Enemy Vision</AssemblyName>
+    <RootNamespace>EnemyVision</RootNamespace>
+    <AssemblyName>EnemyVision</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
