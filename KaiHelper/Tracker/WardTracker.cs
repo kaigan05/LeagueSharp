@@ -206,10 +206,10 @@ namespace KaiHelper.Tracker
                 return;
             }
             Obj_AI_Base objAiBase = @base;
-            //if (objAiBase.IsAlly)
-            //{
-            //    return;
-            //}
+            if (objAiBase.IsAlly)
+            {
+                return;
+            }
             if (!Tracker.Ward.IsWard(objAiBase.SkinName))
             {
                 return;

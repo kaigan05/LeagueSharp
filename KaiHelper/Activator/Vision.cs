@@ -11,11 +11,12 @@ namespace KaiHelper.Activator
     internal class Vision
     {
         private readonly Menu _menu;
+        private Render.Line line;
 
         public Vision(Menu menu)
         {
             _menu = menu.AddSubMenu(new Menu("Enemy vision", "Enemyvision"));
-            _menu.AddItem(new MenuItem("DoTron", "Roundness").SetValue(new Slider(11, 1, 20)));
+            _menu.AddItem(new MenuItem("DoTron", "Roundness").SetValue(new Slider(20, 1, 20)));
             _menu.AddItem(new MenuItem("DoChinhXac", "Accuracy").SetValue(new Slider(1, 1)));
             _menu.AddItem(new MenuItem("TrenManHinh", "Only draw when enemys on screen").SetValue(false));
             _menu.AddItem(new MenuItem("VongTron", "Only Circle").SetValue(false));
@@ -72,7 +73,7 @@ namespace KaiHelper.Activator
                 Utility.DrawCircle(result.Position, tamNhin, Color.PaleVioletRed);
                 return;
             }
-            var listPoint = new List<Vector3>();
+            var listPoint = new List<Vector2>();
             int doTron = 21 - (_menu.Item("DoTron").GetValue<Slider>().Value);
             int doChinhXac = 101 - (_menu.Item("DoChinhXac").GetValue<Slider>().Value);
             for (int i = 0; i <= 360; i += doTron)
@@ -94,13 +95,10 @@ namespace KaiHelper.Activator
                     vongngoai = vongtrong;
                     break;
                 }
-                listPoint.Add(vongngoai);
+                listPoint.Add(Drawing.WorldToScreen(vongngoai));
             }
-            for (int i = 0; i < listPoint.Count - 1; i++)
-            {
-                Vector2 v1 = Drawing.WorldToScreen(listPoint[i]);
-                Vector2 v2 = Drawing.WorldToScreen(listPoint[i + 1]);
-                Drawing.DrawLine(v1, v2, 1, Color.PaleVioletRed);
+            for (int i = 0; i < listPoint.Count - 1; i++){
+                Drawing.DrawLine(listPoint[i], listPoint[i+1], 1, Color.PaleVioletRed);
             }
         }
 
