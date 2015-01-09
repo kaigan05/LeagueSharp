@@ -51,6 +51,11 @@ namespace KaiHelper
 
         public static string SpellFolder(string fileName)
         {
+            string path = string.Format(@"{0}\Images\Skills\{1}.png", MainFolder, fileName);
+            if (!File.Exists(path))
+            {
+                return string.Format(@"{0}\Images\Skills\Unknown.png", MainFolder);
+            }
             return string.Format(@"{0}\Images\Skills\{1}.png", MainFolder, fileName);
         }
 

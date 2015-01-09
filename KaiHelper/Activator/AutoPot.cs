@@ -7,7 +7,7 @@ namespace KaiHelper.Activator
     internal class AutoPot
     {
         private readonly Menu _menu;
-
+        private int _level;
         public AutoPot(Menu menu)
         {
             _menu = menu.AddSubMenu(new Menu("Potion Manager", "PotionManager"));
@@ -16,20 +16,16 @@ namespace KaiHelper.Activator
             _menu.AddItem(new MenuItem("MPTrigger", "MP Trigger Percent").SetValue(new Slider(30)));
             _menu.AddItem(new MenuItem("ManaPotion", "Mana Potion").SetValue(true));
             MenuItem autoarrangeMenu =
-                _menu.AddItem(new MenuItem("AutoArrange", "Auto Arrange").DontSave().SetValue(false));
+                _menu.AddItem(new MenuItem("AutoArrange", "Auto Arrange").SetValue(false));
             autoarrangeMenu.ValueChanged += AutoRangeValueChanged;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnGameUpdate+=Game_OnGameUpdate;
+
         }
 
-        private void AutoRangeValueChanged(object sender, OnValueChangeEventArgs e)
+        private void SetMana()
         {
-            if (!e.GetNewValue<bool>())
-            {
-                return;
-            }
             _menu.Item("HPTrigger")
-                .SetValue(new Slider(FomularPercent((int) ObjectManager.Player.MaxHealth, 150), 1, 99));
-            Console.WriteLine(ObjectManager.Player.MaxMana);
+                .SetValue(new Slider(FomularPercent((int)ObjectManager.Player.MaxHealth, 150), 1, 99));
             if (ObjectManager.Player.MaxMana <= 0)
             {
                 _menu.Item("ManaPotion").SetValue(false);
@@ -37,7 +33,14 @@ namespace KaiHelper.Activator
             else
             {
                 _menu.Item("MPTrigger")
-                    .SetValue(new Slider(FomularPercent((int) ObjectManager.Player.MaxMana, 100), 1, 99));
+                    .SetValue(new Slider(FomularPercent((int)ObjectManager.Player.MaxMana, 100), 1, 99));
+            }
+        }
+        private void AutoRangeValueChanged(object sender, OnValueChangeEventArgs e)
+        {
+            if (!e.GetNewValue<bool>())
+            {
+                SetMana();
             }
         }
 
@@ -48,6 +51,15 @@ namespace KaiHelper.Activator
 
         private void Game_OnGameUpdate(EventArgs args)
         {
+            if (_menu.Item("AutoArrange").GetValue<bool>())
+            {
+                int level = ObjectManager.Player.Level;
+                if (level > _level)
+                {
+                    _level = level;
+                    SetMana();
+                }
+            }
             if (!ObjectManager.Player.IsDead && !ObjectManager.Player.InFountain() &&
                 !ObjectManager.Player.HasBuff("Recall"))
             {
