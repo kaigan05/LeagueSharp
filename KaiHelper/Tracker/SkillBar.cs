@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -108,7 +109,7 @@ namespace KaiHelper.Tracker
 
         private Texture GetTexture(string heroName, SpellSlot spellSlot, string name = null)
         {
-            Bitmap bitmap;
+            Bitmap bitmap; 
             if (name != null)
             {
                 bitmap = new Bitmap(Helper.SummonerSpellFolder(name));
@@ -124,9 +125,6 @@ namespace KaiHelper.Tracker
 
         private void Drawing_OnDraw(EventArgs args)
         {
-            //if (Environment.TickCount - _nextTime >= 0)
-            //{
-            //    _nextTime = Environment.TickCount + 10;
                 try
                 {
                     foreach (

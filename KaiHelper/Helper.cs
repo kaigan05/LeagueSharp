@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -25,14 +26,24 @@ namespace KaiHelper
                     var config = new XmlDocument();
                     config.Load(configFile);
                     var node = config.DocumentElement.SelectSingleNode("/Config/SelectedProfile/InstalledAssemblies");
-                    foreach (XmlElement kainode in node.ChildNodes.Cast<XmlElement>().Where(element => element.Name == "Name" && element.InnerText == "KaiHelper")) {
-                        result =Path.GetDirectoryName(kainode.ChildNodes.Cast<XmlElement>().First(e => e.Name == "PathToProjectFile")
-                            .InnerText);
-                        break;
+                    foreach (
+                            var element in
+                                node.ChildNodes.Cast<XmlElement>()
+                                    .Where(
+                                        element =>
+                                            element.ChildNodes.Cast<XmlElement>()
+                                                .Any(e => e.Name == "Name" && e.InnerText == "KaiHelper")))
+                    {
+                        result=
+                            Path.GetDirectoryName(
+                                element.ChildNodes.Cast<XmlElement>()
+                                    .First(e => e.Name == "PathToProjectFile")
+                                    .InnerText);
                     }
                 }
                 if (result==null)
                 {
+                    Console.WriteLine("NULL");
                     string directory = Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                         @"LeagueSharp\Repositories");
@@ -56,7 +67,7 @@ namespace KaiHelper
             {
                 return string.Format(@"{0}\Images\Skills\Unknown.png", MainFolder);
             }
-            return string.Format(@"{0}\Images\Skills\{1}.png", MainFolder, fileName);
+            return path;
         }
 
         public static string MiniMapFolder(string fileName)
@@ -79,11 +90,7 @@ namespace KaiHelper
             font.DrawText(null, text, posX + rec.X, posY, color);
         }
 
-        public static bool UnitTrenManHinh(Obj_AI_Base o)
-        {
-            var viTri = Drawing.WorldToScreen(o.Position);
-            return viTri.X > 0 && viTri.X < Drawing.Width && viTri.Y > 0 && viTri.Y < Drawing.Height;
-        }
+        
         public static string FormatTime(double time)
         {
             TimeSpan t = TimeSpan.FromSeconds(time);
@@ -122,7 +129,11 @@ namespace KaiHelper
             const string pattern = @"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}";
             return new Regex(pattern).Match(version).Groups[0].Value;
         }
-
+        public static bool UnitTrenManHinh(Obj_AI_Base o)
+        {
+            var viTri = Drawing.WorldToScreen(o.Position);
+            return viTri.X > 0 && viTri.X < Drawing.Width && viTri.Y > 0 && viTri.Y < Drawing.Height;
+        }
         public static bool HasNewVersion(string assemblyName)
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString() != GetLastVersion(assemblyName);

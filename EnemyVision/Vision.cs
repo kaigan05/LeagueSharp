@@ -12,16 +12,18 @@ namespace EnemyVision
     {
         private readonly Menu _menu;
 
-        public Vision(Menu menu)
+        public Vision()
         {
-            _menu = menu.AddSubMenu(new Menu("Enemy vision", "Enemyvision"));
+            _menu = new Menu("Enemy vision", "Enemyvision",true);
             _menu.AddItem(new MenuItem("DoTron", "Roundness").SetValue(new Slider(20, 1, 20)));
             _menu.AddItem(new MenuItem("DoChinhXac", "Accuracy").SetValue(new Slider(1, 1)));
             _menu.AddItem(new MenuItem("TrenManHinh", "Only draw when enemys on screen").SetValue(false));
             _menu.AddItem(new MenuItem("VongTron", "Only Circle").SetValue(false));
             _menu.AddItem(new MenuItem("NguoiChoiTest", "Test by me").SetValue(false));
             _menu.AddItem(new MenuItem("Active", "Active").SetValue(false));
+            _menu.AddToMainMenu();
             Drawing.OnDraw += Game_OnDraw;
+            Game.PrintChat("Enemy vision by kaigan Loaded!");
         }
         public static bool UnitTrenManHinh(Obj_AI_Base o)
         {

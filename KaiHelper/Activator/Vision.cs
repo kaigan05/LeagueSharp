@@ -11,7 +11,6 @@ namespace KaiHelper.Activator
     internal class Vision
     {
         private readonly Menu _menu;
-        private Render.Line line;
 
         public Vision(Menu menu)
         {
@@ -20,8 +19,8 @@ namespace KaiHelper.Activator
             _menu.AddItem(new MenuItem("DoChinhXac", "Accuracy").SetValue(new Slider(1, 1)));
             _menu.AddItem(new MenuItem("TrenManHinh", "Only draw when enemys on screen").SetValue(false));
             _menu.AddItem(new MenuItem("VongTron", "Only Circle").SetValue(false));
-            _menu.AddItem(new MenuItem("NguoiChoiTest", "Test by me").SetValue(false));
-            _menu.AddItem(new MenuItem("Active", "Active").SetValue(false));
+            _menu.AddItem(new MenuItem("NguoiChoiTest", "Test").SetValue(false));
+            _menu.AddItem(new MenuItem("Active", "Active").SetValue(true));
             Drawing.OnDraw += Game_OnDraw;
         }
 
@@ -64,13 +63,13 @@ namespace KaiHelper.Activator
             }
             if (_menu.Item("TrenManHinh").GetValue<bool>())
             {
-                if(!Helper.UnitTrenManHinh(result))
+                if(!UnitTrenManHinh(result))
                     return;
             }
             int tamNhin = result is Obj_AI_Hero || result is Obj_AI_Turret ? 1300 : 1200;
             if (_menu.Item("VongTron").GetValue<bool>())
             {
-                Utility.DrawCircle(result.Position, tamNhin, Color.PaleVioletRed);
+                Render.Circle.DrawCircle(result.Position, tamNhin, Color.PaleVioletRed,5);
                 return;
             }
             var listPoint = new List<Vector2>();
@@ -101,7 +100,11 @@ namespace KaiHelper.Activator
                 Drawing.DrawLine(listPoint[i], listPoint[i+1], 1, Color.PaleVioletRed);
             }
         }
-
+        public static bool UnitTrenManHinh(Obj_AI_Base o)
+        {
+            var viTri = Drawing.WorldToScreen(o.Position);
+            return viTri.X > 0 && viTri.X < Drawing.Width && viTri.Y > 0 && viTri.Y < Drawing.Height;
+        }
     }
 
 }
