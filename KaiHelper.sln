@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xSaliceReligionAIO", "..\..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImmortalSerials", "ImmortalKatarina\ImmortalSerials.csproj", "{C562AF75-97A4-4251-814B-9AF38F081AD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{F87C61C0-5FBC-4475-8382-F977713B4407}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,16 @@ Global
 		{C562AF75-97A4-4251-814B-9AF38F081AD7}.Release|Mixed Platforms.Build.0 = Release|x86
 		{C562AF75-97A4-4251-814B-9AF38F081AD7}.Release|x86.ActiveCfg = Release|x86
 		{C562AF75-97A4-4251-814B-9AF38F081AD7}.Release|x86.Build.0 = Release|x86
+		{F87C61C0-5FBC-4475-8382-F977713B4407}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F87C61C0-5FBC-4475-8382-F977713B4407}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F87C61C0-5FBC-4475-8382-F977713B4407}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{F87C61C0-5FBC-4475-8382-F977713B4407}.Debug|x86.ActiveCfg = Debug|x86
+		{F87C61C0-5FBC-4475-8382-F977713B4407}.Debug|x86.Build.0 = Debug|x86
+		{F87C61C0-5FBC-4475-8382-F977713B4407}.Release|Any CPU.ActiveCfg = Release|x86
+		{F87C61C0-5FBC-4475-8382-F977713B4407}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{F87C61C0-5FBC-4475-8382-F977713B4407}.Release|Mixed Platforms.Build.0 = Release|x86
+		{F87C61C0-5FBC-4475-8382-F977713B4407}.Release|x86.ActiveCfg = Release|x86
+		{F87C61C0-5FBC-4475-8382-F977713B4407}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
