@@ -1,85 +1,22 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Xml;
 using LeagueSharp;
-using LeagueSharp.Common;
 using SharpDX;
 using SharpDX.Direct3D9;
+using Color = SharpDX.Color;
+using Font = SharpDX.Direct3D9.Font;
+using Rectangle = SharpDX.Rectangle;
 
 namespace KaiHelper
 {
     internal class Helper
     {
-        public static string MainFolder
-        {
-            get
-            {
-                string result = null;
-                var configFile = Path.Combine(Config.LeagueSharpDirectory, "config.xml");
-                if (File.Exists(configFile))
-                {
-                    var config = new XmlDocument();
-                    config.Load(configFile);
-                    var node = config.DocumentElement.SelectSingleNode("/Config/SelectedProfile/InstalledAssemblies");
-                    foreach (
-                            var element in
-                                node.ChildNodes.Cast<XmlElement>()
-                                    .Where(
-                                        element =>
-                                            element.ChildNodes.Cast<XmlElement>()
-                                                .Any(e => e.Name == "Name" && e.InnerText == "KaiHelper")))
-                    {
-                        result=
-                            Path.GetDirectoryName(
-                                element.ChildNodes.Cast<XmlElement>()
-                                    .First(e => e.Name == "PathToProjectFile")
-                                    .InnerText);
-                    }
-                }
-                if (result==null)
-                {
-                    Console.WriteLine("NULL");
-                    string directory = Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        @"LeagueSharp\Repositories");
-                    result = Directory.GetDirectories(directory, "KaiHelper", SearchOption.AllDirectories).First();
-                }
-                return result;
-            }
-        }
-
-        public static string SummonerSpellFolder(string fileName = null)
-        {
-            return fileName == null
-                ? string.Format(@"{0}\Images\SSpell\", MainFolder)
-                : string.Format(@"{0}\Images\SSpell\{1}.png", MainFolder, fileName);
-        }
-
-        public static string SpellFolder(string fileName)
-        {
-            string path = string.Format(@"{0}\Images\Skills\{1}.png", MainFolder, fileName);
-            if (!File.Exists(path))
-            {
-                return string.Format(@"{0}\Images\Skills\Unknown.png", MainFolder);
-            }
-            return path;
-        }
-
-        public static string MiniMapFolder(string fileName)
-        {
-            return string.Format(@"{0}\Images\Minimap\{1}.png", MainFolder, fileName);
-        }
-
-        public static string HudFolder(string fileName)
-        {
-            return string.Format(@"{0}\Images\HUD\{1}.png", MainFolder, fileName);
-        }
-
         public static void DrawText(Font font, String text, int posX, int posY, Color color)
         {
             Rectangle rec = font.MeasureText(null, text, FontDrawFlags.Center);
@@ -90,11 +27,52 @@ namespace KaiHelper
             font.DrawText(null, text, posX + rec.X, posY, color);
         }
 
-        
+        public static Bitmap CropCircleImage(Bitmap image)
+        {
+            var cropRect = new System.Drawing.Rectangle(0, 0, image.Width, image.Height);
+            using (Bitmap cropImage = image.Clone(cropRect, image.PixelFormat))
+            {
+                using (var tb = new TextureBrush(cropImage))
+                {
+                    var target = new Bitmap(cropRect.Width, cropRect.Height);
+                    using (Graphics g = Graphics.FromImage(target))
+                    {
+                        g.FillEllipse(tb, new System.Drawing.Rectangle(0, 0, cropRect.Width, cropRect.Height));
+                        var p = new Pen(System.Drawing.Color.Red, 8) { Alignment = PenAlignment.Inset };
+                        g.DrawEllipse(p, 0, 0, cropRect.Width, cropRect.Width);
+                        return target;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     http://www.codeproject.com/Tips/201129/Change-Opacity-of-Image-in-C
+        /// </summary>
+        /// <returns></returns>
+        public static Bitmap ChangeOpacity(Bitmap image, float opacity)
+        {
+            var bmp = new Bitmap(image.Width, image.Height);
+            using (Graphics gfx = Graphics.FromImage(bmp))
+            {
+                var matrix = new ColorMatrix { Matrix33 = opacity };
+                var attributes = new ImageAttributes();
+                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                gfx.DrawImage(
+                    image, new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, image.Width, image.Height,
+                    GraphicsUnit.Pixel, attributes);
+            }
+            return bmp;
+        }
+
         public static string FormatTime(double time)
         {
             TimeSpan t = TimeSpan.FromSeconds(time);
-            return string.Format("{0:D1}:{1:D2}", t.Minutes, t.Seconds);
+            if (t.Minutes > 0)
+            {
+                return string.Format("{0:D1}:{1:D2}", t.Minutes, t.Seconds);
+            }
+            return string.Format("{0:D}", t.Seconds);
         }
 
         public static Stream Download(string url)
@@ -129,11 +107,13 @@ namespace KaiHelper
             const string pattern = @"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}";
             return new Regex(pattern).Match(version).Groups[0].Value;
         }
+
         public static bool UnitTrenManHinh(Obj_AI_Base o)
         {
-            var viTri = Drawing.WorldToScreen(o.Position);
+            Vector2 viTri = Drawing.WorldToScreen(o.Position);
             return viTri.X > 0 && viTri.X < Drawing.Width && viTri.Y > 0 && viTri.Y < Drawing.Height;
         }
+
         public static bool HasNewVersion(string assemblyName)
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString() != GetLastVersion(assemblyName);

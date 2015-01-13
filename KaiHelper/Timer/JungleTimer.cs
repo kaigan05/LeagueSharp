@@ -7,7 +7,7 @@ using LeagueSharp.Common;
 using SharpDX;
 using SharpDX.Direct3D9;
 
-namespace KaiHelper
+namespace KaiHelper.Timer
 {
     public class JungleTimer
     {

@@ -175,8 +175,9 @@ namespace KaiHelper.Tracker
     {
         private readonly List<Ward> _detectedWards = new List<Ward>();
         public Menu MenuWard;
-        public Bitmap Ward = new Bitmap(Helper.MiniMapFolder("ward"));
-        public Bitmap Pink = new Bitmap(Helper.MiniMapFolder("pink"));
+        public Bitmap Pink;
+        public Bitmap Ward;
+
         public WardDetector(Menu config)
         {
             MenuWard = config;

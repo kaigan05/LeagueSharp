@@ -25,7 +25,7 @@ namespace KaiHelper.Tracker
 
         public GankDetector(Menu config)
         {
-            MenuGank = config.AddSubMenu(new Menu("Gank", "GDetect"));
+            MenuGank = config.AddSubMenu(new Menu("Gank Alerter", "GDetect"));
             MenuGank.AddItem(new MenuItem("InvisibleTime", "Invisisble Time").SetValue(new Slider(5, 1, 10)));
             MenuGank.AddItem(new MenuItem("VisibleTime", "Visible Time").SetValue(new Slider(3, 1, 5)));
             MenuGank.AddItem(new MenuItem("TriggerRange", "Trigger Range").SetValue(new Slider(3000, 1, 3000)));
