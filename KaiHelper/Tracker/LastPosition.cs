@@ -35,6 +35,7 @@ namespace KaiHelper.Tracker
                 Obj_AI_Hero champion in
                     ObjectManager.Get<Obj_AI_Hero>().Where(champion => champion.Team != ObjectManager.Player.Team))
             {
+                Console.WriteLine(champion.ChampionName);
                 championsTracker.Add(new ChampionTracker(champion));
             }
         }

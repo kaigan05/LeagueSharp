@@ -442,7 +442,7 @@
   <data name="Veigar_Square_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\Champions\Veigar_Square_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VelKoz_Square_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="Velkoz_Square_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\Champions\VelKoz_Square_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Viktor_Square_0" type="System.Resources.ResXFileRef, System.Windows.Forms">

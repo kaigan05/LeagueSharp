@@ -406,7 +406,7 @@
     <None Include="Images\Champions\Veigar_Square_0.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Champions\VelKoz_Square_0.png" />
+    <None Include="Images\Champions\Velkoz_Square_0.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\Champions\Vi_Square_0.png" />
