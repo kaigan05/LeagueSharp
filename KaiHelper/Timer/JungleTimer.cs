@@ -131,13 +131,6 @@ namespace KaiHelper.Timer
             {
                 return;
             }
-            IEnumerable<Obj_AI_Base> miniTest =
-                    ObjectManager.Get<Obj_AI_Base>()
-                        .Where(minion => !minion.IsDead && minion.IsValid && minion.Name.ToUpper().StartsWith("SRU")&&minion.Distance(ObjectManager.Player.Position)<500);
-            foreach (var objAiBase in miniTest)
-            {
-                Game.PrintChat(objAiBase.Name);
-            }
             if ((int) Game.ClockTime - _nextTime >= 0)
             {
                 _nextTime = (int) Game.ClockTime + 1;

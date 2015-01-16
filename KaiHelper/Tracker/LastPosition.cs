@@ -61,30 +61,38 @@ namespace KaiHelper.Tracker
 
         private void ObjAiBaseOnOnTeleport(GameObject sender, GameObjectTeleportEventArgs args)
         {
-            if (!Menu.Item("ALP").GetValue<bool>())
+            try
             {
-                return;
-            }
-            var unit = sender as Obj_AI_Hero;
-            if (unit == null || !unit.IsValid || unit.IsAlly)
-            {
-                return;
-            }
-            Packet.S2C.Teleport.Struct recall = Packet.S2C.Teleport.Decoded(sender, args);
-            if (recall.Type == Packet.S2C.Teleport.Type.Recall)
-            {
-                ChampionTracker cham = championsTracker.FirstOrDefault(
-                    c => c.Champion.NetworkId == recall.UnitNetworkId);
-                if (cham != null)
+                //if (!Menu.Item("ALP").GetValue<bool>())
+                //{
+                //    return;
+                //}
+            
+                var unit = sender as Obj_AI_Hero;
+                if (unit == null || !unit.IsValid || unit.IsAlly)
                 {
-                    cham.RecallPostion = cham.Champion.ServerPosition;
-                    cham.Text.Color = Color.Red;
-                    if (recall.Status == Packet.S2C.Teleport.Status.Finish)
+                    return;
+                }
+                Packet.S2C.Teleport.Struct recall = Packet.S2C.Teleport.Decoded(sender, args);
+                if (recall.Type == Packet.S2C.Teleport.Type.Recall)
+                {
+                    ChampionTracker cham = championsTracker.FirstOrDefault(
+                        c => c.Champion.NetworkId == recall.UnitNetworkId);
+                    if (cham != null)
                     {
-                        cham.LastPotion = enemySpawn.Position;
-                        cham.Text.Color = Color.White;
+                        cham.RecallPostion = cham.Champion.ServerPosition;
+                        cham.Text.Color = Color.Red;
+                        if (recall.Status == Packet.S2C.Teleport.Status.Finish)
+                        {
+                            cham.LastPotion = enemySpawn.Position;
+                            cham.Text.Color = Color.White;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                
             }
         }
 
