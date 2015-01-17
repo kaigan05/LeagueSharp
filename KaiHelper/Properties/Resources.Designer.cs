@@ -1353,9 +1353,9 @@ namespace KaiHelper.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Fizz_square_0 {
+        internal static System.Drawing.Bitmap Fizz_Square_0 {
             get {
-                object obj = ResourceManager.GetObject("Fizz_square_0", resourceCulture);
+                object obj = ResourceManager.GetObject("Fizz_Square_0", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

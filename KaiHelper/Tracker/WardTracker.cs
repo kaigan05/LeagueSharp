@@ -23,14 +23,37 @@ namespace KaiHelper.Tracker
         //private Render.Circle _rangeCircle;
         private Render.Sprite _minimapSprite;
         private Render.Text _timerText;
-        static readonly string[] WardNames =
-            {
-                "YellowTrinket", "YellowTrinketUpgrade", "SightWard", "VisionWard", "CaitlynTrap",
-                "TeemoMushroom", "Nidalee_Spear", "ShacoBox"
-            };
-        public static bool IsWard(string name)
+        public static int IsWard(string name)
         {
-            return WardNames.Any(ward => ward == name);
+            int range=0;
+            switch (name)
+            {
+                case "YellowTrinket":
+                    range = 1100;
+                    break;
+                case "YellowTrinketUpgrade":
+                    range = 1100;
+                    break;
+                case "SightWard":
+                    range = 1100;
+                    break;
+                case "VisionWard":
+                    range = 1100;
+                    break;
+                case "CaitlynTrap":
+                    range = 300;
+                    break;
+                case "TeemoMushroom":
+                    range = 212;
+                    break;
+                case "Nidalee_Spear":
+                    range = 212;
+                    break;
+                case "ShacoBox":
+                    range = 212;
+                    break;
+            }
+            return range;
         }
 
         public Ward(string skinName, int startTime,Obj_AI_Base wardObject)
@@ -119,7 +142,7 @@ namespace KaiHelper.Tracker
         public int StartTime { get; set; }
         public int Duration { get; set; }
         public int EndTime { get; set; }
-        public static int Range { get; set; }
+        public  int Range { get; set; }
         public WardType Type { get; set; }
         private Vector2 MinimapPosition { get; set; }
 
@@ -202,7 +225,7 @@ namespace KaiHelper.Tracker
                 return;
             }
             var wardObject = sender as Obj_AI_Base;
-            if (wardObject == null ||!Ward.IsWard(wardObject.SkinName))
+            if (wardObject == null || wardObject.IsAlly || Ward.IsWard(wardObject.SkinName) == 0)
             {
                 return;
             }

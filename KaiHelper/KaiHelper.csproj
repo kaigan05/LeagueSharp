@@ -157,7 +157,7 @@
     <None Include="Images\Champions\Fiora_Square_0.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Images\Champions\Fizz_square_0.png" />
+    <None Include="Images\Champions\Fizz_Square_0.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Images\Champions\Galio_Square_0.png" />

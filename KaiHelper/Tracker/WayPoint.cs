@@ -64,8 +64,8 @@ namespace KaiHelper.Tracker
                         float r = 25 / p2Map.Distance(p1Map);
                         var enp = new Vector2(r * p1Map.X + (1 - r) * p2Map.X, r * p1Map.Y + (1 - r) * p2Map.Y);
                         Drawing.DrawLine(p1Map[0], p1Map[1], enp[0], enp[1], 2, Color.White);
-                        Utility.DrawCircle(endPoint, 50, Color.Red);
-                        Utility.DrawCircle(endPoint, 50, Color.FromArgb(50, Color.Red), -2);
+                        Render.Circle.DrawCircle(endPoint, 50, Color.Red);
+                        Render.Circle.DrawCircle(endPoint, 50, Color.FromArgb(50, Color.Red), -2);
                         Helper.DrawText(
                             _largefont, timer.ToString("F"), (int) p2Map[0], (int) p2Map[1] - 10, SharpDX.Color.White);
                         Helper.DrawText(
