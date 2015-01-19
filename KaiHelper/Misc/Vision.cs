@@ -27,6 +27,10 @@ namespace KaiHelper.Misc
 
         void Game_OnGameUpdate(EventArgs args)
         {
+            if (!_menu.Item("Active").GetValue<bool>())
+            {
+                return;
+            }
             var result = new Obj_AI_Base();
             if (_menu.Item("NguoiChoiTest").GetValue<bool>())
             {
