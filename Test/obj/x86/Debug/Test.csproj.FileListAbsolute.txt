@@ -1,4 +1,0 @@
-D:\Users\HoangThien\Documents\Visual Studio 2010\Projects\KaiHelper\Test\bin\Debug\Test.exe
-D:\Users\HoangThien\Documents\Visual Studio 2010\Projects\KaiHelper\Test\bin\Debug\Test.pdb
-D:\Users\HoangThien\Documents\Visual Studio 2010\Projects\KaiHelper\Test\obj\x86\Debug\Test.exe
-D:\Users\HoangThien\Documents\Visual Studio 2010\Projects\KaiHelper\Test\obj\x86\Debug\Test.pdb
