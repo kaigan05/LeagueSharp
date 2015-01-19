@@ -20,7 +20,6 @@ namespace KaiHelper.Tracker
     internal class Ward
     {
         private Render.Circle _circle;
-        //private Render.Circle _rangeCircle;
         private Render.Sprite _minimapSprite;
         private Render.Text _timerText;
         public static int IsWard(string name)
@@ -156,9 +155,6 @@ namespace KaiHelper.Tracker
             _circle = new Render.Circle(WardObject.Position, 100, Color, 5, true);
             _circle.VisibleCondition += sender => WardDetector.IsActive() && Render.OnScreen(Drawing.WorldToScreen(WardObject.Position));
             _circle.Add(0);
-            //_rangeCircle = new Render.Circle(WardObject.Position, Range, Color, 10);
-            //_rangeCircle.VisibleCondition +=sender =>WardDetector.IsActive();
-            //_rangeCircle.Add(0);
             if (Type != WardType.Trap)
             {
                 _minimapSprite = new Render.Sprite(Bitmap, MinimapPosition) { Scale = new Vector2(Scale, Scale) };
@@ -183,7 +179,6 @@ namespace KaiHelper.Tracker
         public bool RemoveCircle()
         {
             _circle.Remove();
-            //_rangeCircle.Remove();
             if (_timerText != null)
             {
                 _timerText.Remove();

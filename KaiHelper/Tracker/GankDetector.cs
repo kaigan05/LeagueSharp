@@ -21,86 +21,79 @@ namespace KaiHelper.Tracker
     public class GankDetector
     {
         private readonly Dictionary<Obj_AI_Hero, Time> _enemies = new Dictionary<Obj_AI_Hero, Time>();
-        public Menu MenuGank;
+        private readonly Menu _menuGank;
 
         public GankDetector(Menu config)
         {
-            MenuGank = config.AddSubMenu(new Menu("Gank Alerter", "GDetect"));
-            MenuGank.AddItem(new MenuItem("InvisibleTime", "Invisisble Time").SetValue(new Slider(5, 1, 10)));
-            MenuGank.AddItem(new MenuItem("VisibleTime", "Visible Time").SetValue(new Slider(3, 1, 5)));
-            MenuGank.AddItem(new MenuItem("TriggerRange", "Trigger Range").SetValue(new Slider(3000, 1, 3000)));
-            MenuGank.AddItem(new MenuItem("CircalRange", "Circal Range").SetValue(new Slider(2500, 1, 3000)));
-            MenuGank.AddItem(new MenuItem("Fill", "Fill").SetValue(true));
-            MenuGank.AddItem(new MenuItem("Line", "Line").SetValue(true));
-            MenuGank.AddItem(new MenuItem("Ping", "Chat Alert").SetValue(true));
-            MenuGank.AddItem(new MenuItem("GankActive", "Active").SetValue(true));
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            _menuGank = config.AddSubMenu(new Menu("Gank Alerter", "GDetect"));
+            _menuGank.AddItem(new MenuItem("InvisibleTime", "Invisisble Time").SetValue(new Slider(5, 1, 10)));
+            _menuGank.AddItem(new MenuItem("VisibleTime", "Visible Time").SetValue(new Slider(3, 1, 5)));
+            _menuGank.AddItem(new MenuItem("TriggerRange", "Trigger Range").SetValue(new Slider(3000, 1, 3000)));
+            _menuGank.AddItem(new MenuItem("CircalRange", "Circal Range").SetValue(new Slider(2500, 1, 3000)));
+            _menuGank.AddItem(new MenuItem("GankType", "Type").SetValue(new StringList(new []{"Line","Circle","Both"})));
+            _menuGank.AddItem(new MenuItem("Ping", "Chat Alerter").SetValue(true));
+            _menuGank.AddItem(new MenuItem("GankActive", "Active").SetValue(true));
             CustomEvents.Game.OnGameLoad += (args =>
             {
                 foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>().Where(hero => hero.IsEnemy))
                 {
                     _enemies.Add(hero, new Time());
                 }
+                Game.OnGameUpdate += Game_OnGameUpdate;
+                Drawing.OnDraw += Drawing_OnDraw;
             });
-            Drawing.OnDraw += Drawing_OnDraw;
+            
         }
-
         private void Drawing_OnDraw(EventArgs args)
         {
-            if (!IsActive())
+            if (!IsActive)
             {
                 return;
             }
-            int triggerGank = MenuGank.Item("TriggerRange").GetValue<Slider>().Value;
-            int circalGank = MenuGank.Item("CircalRange").GetValue<Slider>().Value;
-            int invisibleTime = MenuGank.Item("InvisibleTime").GetValue<Slider>().Value;
-            int visibleTime = MenuGank.Item("VisibleTime").GetValue<Slider>().Value;
             foreach (Obj_AI_Hero hero in
                 _enemies.Select(enemy => enemy.Key)
                     .Where(
                         hero =>
-                            !hero.IsDead && hero.IsVisible && _enemies[hero].InvisibleTime >= invisibleTime &&
-                            _enemies[hero].VisibleTime <= visibleTime &&
-                            hero.Distance(ObjectManager.Player.Position) <= triggerGank))
+                            !hero.IsDead && hero.IsVisible && _enemies[hero].InvisibleTime >= InvisibleTime &&
+                            _enemies[hero].VisibleTime <= VisibleTime &&
+                            hero.Distance(ObjectManager.Player.Position) <= TriggerGank))
             {
-                Render.Circle.DrawCircle(hero.Position, circalGank, Color.Red, 20);
-                if (MenuGank.Item("Line").GetValue<bool>())
+                switch (GankType)
                 {
-                    Drawing.DrawLine(Drawing.WorldToScreen(ObjectManager.Player.Position), Drawing.WorldToScreen(hero.Position), 5, Color.Crimson);
-                }
-                if (MenuGank.Item("Fill").GetValue<bool>())
-                {
-                    Render.Circle.DrawCircle(hero.Position, circalGank, Color.FromArgb(15, Color.Red), -142857);
+                    case 0:
+                        Drawing.DrawLine(Drawing.WorldToScreen(ObjectManager.Player.Position), Drawing.WorldToScreen(hero.Position), 5, Color.Crimson);
+                        break;
+                    case 1: 
+                        Render.Circle.DrawCircle(hero.Position, CircalGank, Color.Red, 20);
+                        Render.Circle.DrawCircle(hero.Position, CircalGank, Color.FromArgb(15, Color.Red), -142857);
+                        break;
+                    default:
+                        Render.Circle.DrawCircle(hero.Position, CircalGank, Color.Red, 20);
+                        Render.Circle.DrawCircle(hero.Position, CircalGank, Color.FromArgb(15, Color.Red), -142857);
+                        Drawing.DrawLine(Drawing.WorldToScreen(ObjectManager.Player.Position), Drawing.WorldToScreen(hero.Position), 5, Color.Crimson);
+                        break;
                 }
             }
-        }
-
-        public bool IsActive()
-        {
-            return MenuGank.Item("GankActive").GetValue<bool>();
         }
 
         private void Game_OnGameUpdate(EventArgs args)
         {
-            if (!IsActive())
+            if (!IsActive)
             {
                 return;
             }
-            int triggerGank = MenuGank.Item("TriggerRange").GetValue<Slider>().Value;
-            int invisibleTime = MenuGank.Item("InvisibleTime").GetValue<Slider>().Value;
-            int visibleTime = MenuGank.Item("VisibleTime").GetValue<Slider>().Value;
             foreach (var enemy in _enemies)
             {
                 UpdateTime(enemy);
                 Obj_AI_Hero hero = enemy.Key;
-                if (hero.IsDead || !hero.IsVisible || _enemies[hero].InvisibleTime < invisibleTime ||
-                    _enemies[hero].VisibleTime > visibleTime ||
-                    !(hero.Distance(ObjectManager.Player.Position) <= triggerGank))
+                if (hero.IsDead || !hero.IsVisible || _enemies[hero].InvisibleTime < InvisibleTime ||
+                    _enemies[hero].VisibleTime > VisibleTime ||
+                    !(hero.Distance(ObjectManager.Player.Position) <= TriggerGank))
                 {
                     continue;
                 }
                 //var t = MenuGank.Item("Ping").GetValue<StringList>();
-                if (!MenuGank.Item("Ping").GetValue<bool>())
+                if (!ChatAlert)
                 {
                     continue;
                 }
@@ -121,7 +114,7 @@ namespace KaiHelper.Tracker
                     //            .Send();
                     //        break;
                     //}
-                    Utility.DelayAction.Add((visibleTime + 1) * 1000, () => { _enemies[hero].Pinged = false; });
+                    Utility.DelayAction.Add((VisibleTime + 1) * 1000, () => { _enemies[hero].Pinged = false; });
                 }
             }
         }
@@ -154,5 +147,12 @@ namespace KaiHelper.Tracker
                 _enemies[hero].InvisibleTime = (Environment.TickCount - _enemies[hero].StartInvisibleTime) / 1000;
             }
         }
+        public int TriggerGank { get { return _menuGank.Item("TriggerRange").GetValue<Slider>().Value; } }
+        public int CircalGank { get { return _menuGank.Item("CircalRange").GetValue<Slider>().Value; } }
+        public int InvisibleTime { get { return _menuGank.Item("InvisibleTime").GetValue<Slider>().Value; } }
+        public int VisibleTime { get { return _menuGank.Item("VisibleTime").GetValue<Slider>().Value; } }
+        public bool IsActive { get { return _menuGank.Item("GankActive").GetValue<bool>(); } }
+        public int GankType { get { return _menuGank.Item("GankType").GetValue<StringList>().SelectedIndex; } }
+        public bool ChatAlert { get { return _menuGank.Item("Ping").GetValue<bool>(); } }
     }
 }

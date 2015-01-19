@@ -66,10 +66,8 @@ namespace KaiHelper.Tracker
                         Drawing.DrawLine(p1Map[0], p1Map[1], enp[0], enp[1], 2, Color.White);
                         Render.Circle.DrawCircle(endPoint, 50, Color.Red);
                         Render.Circle.DrawCircle(endPoint, 50, Color.FromArgb(50, Color.Red), -2);
-                        Helper.DrawText(
-                            _largefont, timer.ToString("F"), (int) p2Map[0], (int) p2Map[1] - 10, SharpDX.Color.White);
-                        Helper.DrawText(
-                            _largefont, hero.SkinName, (int) p2Map[0], (int) p2Map[1] + 18, SharpDX.Color.White);
+                        Helper.DrawText(_largefont, timer.ToString("F"), (int) p2Map[0], (int) p2Map[1] - 10, SharpDX.Color.White);
+                        Helper.DrawText(_largefont, hero.SkinName, (int) p2Map[0], (int) p2Map[1] + 18, SharpDX.Color.White);
                     }
                     if (_menu.Item("AWPMiniMap").GetValue<bool>())
                     {
@@ -77,8 +75,7 @@ namespace KaiHelper.Tracker
                         Vector2 p2MiMap = Drawing.WorldToMinimap(endPoint);
                         if (i == lengthPoint)
                         {
-                            Helper.DrawText(
-                                _smallfont, hero.SkinName, (int) p2MiMap.X, (int) p2MiMap.Y - 6, SharpDX.Color.Pink);
+                            Helper.DrawText(_smallfont, hero.SkinName, (int) p2MiMap.X, (int) p2MiMap.Y - 6, SharpDX.Color.Pink);
                         }
                         Drawing.DrawLine(p1MiMap[0], p1MiMap[1], p2MiMap[0], p2MiMap[1], 1, Color.Yellow);
                     }

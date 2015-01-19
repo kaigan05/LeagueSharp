@@ -92,7 +92,7 @@ namespace KaiHelper.Tracker
             }
             catch (Exception ex)
             {
-                
+                Console.WriteLine(ex.Message);
             }
         }
 
