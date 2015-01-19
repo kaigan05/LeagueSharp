@@ -35,7 +35,7 @@ namespace KaiHelper.Tracker
                 Obj_AI_Hero champion in
                     ObjectManager.Get<Obj_AI_Hero>().Where(champion => champion.Team != ObjectManager.Player.Team))
             {
-                Console.WriteLine(champion.ChampionName);
+                //Console.WriteLine(champion.ChampionName);
                 championsTracker.Add(new ChampionTracker(champion));
             }
         }
@@ -99,7 +99,6 @@ namespace KaiHelper.Tracker
         internal class ChampionTracker
         {
             public readonly Render.Text Text;
-            private readonly Menu _config;
 
             public Vector3 LastPotion;
             public Vector3 RecallPostion;

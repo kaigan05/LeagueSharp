@@ -14,7 +14,7 @@ namespace EnemyVision
 
         public Vision()
         {
-            _menu = new Menu("Enemy vision", "Enemyvision",true);
+            _menu = new Menu("[KH] Enemy vision", "Enemyvision",true);
             _menu.AddItem(new MenuItem("VongTron", "Only Circle").SetValue(false));
             _menu.AddItem(new MenuItem("NguoiChoiTest", "Test by me").SetValue(false));
             _menu.AddItem(new MenuItem("Active", "Active").SetValue(false));
