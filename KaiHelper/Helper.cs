@@ -15,7 +15,7 @@ using Rectangle = SharpDX.Rectangle;
 
 namespace KaiHelper
 {
-    internal class Helper
+    public static class Helper
     {
         public static void DrawText(Font font, String text, int posX, int posY, Color color)
         {
@@ -113,7 +113,20 @@ namespace KaiHelper
             Vector2 viTri = Drawing.WorldToScreen(o.Position);
             return viTri.X > 0 && viTri.X < Drawing.Width && viTri.Y > 0 && viTri.Y < Drawing.Height;
         }
-
+        public static float PredictedHealth(this Obj_AI_Hero champion, int secondTime)
+        {
+            var predictedhealth = champion.Health + champion.HPRegenRate * secondTime;
+            return predictedhealth > champion.MaxHealth ? champion.MaxHealth : predictedhealth;
+        }
+        public static float PredictedMana(this Obj_AI_Hero champion, int secondTime)
+        {
+            var predictedMana = champion.Mana + champion.PARRegenRate * secondTime;
+            return predictedMana > champion.MaxMana ? champion.MaxMana : predictedMana;
+        }
+        public static int GetPercent(float cur, float max)
+        {
+            return (int)((cur * 1.0) / max * 100);
+        }
         public static bool HasNewVersion(string assemblyName)
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString() != GetLastVersion(assemblyName);

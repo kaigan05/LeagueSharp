@@ -12,8 +12,8 @@ namespace KaiHelper.Tracker
 {
     internal class LastPosition
     {
-        private readonly List<ChampionTracker> championsTracker = new List<ChampionTracker>();
-        private readonly Obj_SpawnPoint enemySpawn = ObjectManager.Get<Obj_SpawnPoint>().FirstOrDefault(x => x.IsEnemy);
+        private readonly List<ChampionTracker> _championsTracker = new List<ChampionTracker>();
+        private readonly Obj_SpawnPoint _enemySpawn = ObjectManager.Get<Obj_SpawnPoint>().FirstOrDefault(x => x.IsEnemy);
         public static Menu Menu;
 
         public LastPosition(Menu timer)
@@ -25,8 +25,7 @@ namespace KaiHelper.Tracker
             Menu.AddItem(new MenuItem("ALP", "Active").SetValue(true));
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
             Obj_AI_Base.OnTeleport += ObjAiBaseOnOnTeleport;
-            Game.OnGameUpdate += Game_OnGameUpdate;
-            Game.PrintChat("LastPos Loaded!");
+            Game.OnUpdate += Game_OnGameUpdate;
         }
 
         private void Game_OnGameLoad(EventArgs args)
@@ -36,7 +35,7 @@ namespace KaiHelper.Tracker
                     ObjectManager.Get<Obj_AI_Hero>().Where(champion => champion.Team != ObjectManager.Player.Team))
             {
                 //Console.WriteLine(champion.ChampionName);
-                championsTracker.Add(new ChampionTracker(champion));
+                _championsTracker.Add(new ChampionTracker(champion));
             }
         }
 
@@ -46,7 +45,7 @@ namespace KaiHelper.Tracker
             {
                 return;
             }
-            foreach (ChampionTracker champion in championsTracker)
+            foreach (ChampionTracker champion in _championsTracker)
             {
                 if (champion.Champion.ServerPosition != champion.RecallPostion)
                 {
@@ -76,7 +75,7 @@ namespace KaiHelper.Tracker
                 Packet.S2C.Teleport.Struct recall = Packet.S2C.Teleport.Decoded(sender, args);
                 if (recall.Type == Packet.S2C.Teleport.Type.Recall)
                 {
-                    ChampionTracker cham = championsTracker.FirstOrDefault(
+                    ChampionTracker cham = _championsTracker.FirstOrDefault(
                         c => c.Champion.NetworkId == recall.UnitNetworkId);
                     if (cham != null)
                     {
@@ -84,7 +83,7 @@ namespace KaiHelper.Tracker
                         cham.Text.Color = Color.Red;
                         if (recall.Status == Packet.S2C.Teleport.Status.Finish)
                         {
-                            cham.LastPotion = enemySpawn.Position;
+                            cham.LastPotion = _enemySpawn.Position;
                             cham.Text.Color = Color.White;
                         }
                     }
@@ -113,8 +112,8 @@ namespace KaiHelper.Tracker
                     new Render.Sprite(
                         Helper.ChangeOpacity(
                             Helper.CropCircleImage(
-                                (Resources.ResourceManager.GetObject(Champion.ChampionName + "_Square_0") ??
-                                 Resources.Katarina_Square_0) as Bitmap), Opacity), new Vector2(0, 0));
+                                ResourceImages.GetChampionSquare(champion.SkinName) ??
+                                ResourceImages.GetChampionSquare("Aatrox")), Opacity), new Vector2(0, 0));
                 sprite.GrayScale();
                 sprite.Scale = new Vector2(Scale, Scale);
                 sprite.VisibleCondition = sender => TrackerCondition;

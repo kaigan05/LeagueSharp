@@ -86,17 +86,17 @@ namespace KaiHelper.Timer
                 new JungleCamp("Sru_Crab", 180, new Vector3(4400f, 9600f, -66.53082f), new[] { "Sru_Crab16.1.1" }));
             _mapFont = new Font(Drawing.Direct3DDevice, new System.Drawing.Font("Times New Roman", 20));
             _miniMapFont = new Font(Drawing.Direct3DDevice, new System.Drawing.Font("Times New Roman", 8));
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Drawing_OnDraw;
             Drawing.OnEndScene += Drawing_OnEndScene;
             //GameObject.OnCreate += GameObject_OnCreate;
         }
 
-        void GameObject_OnCreate(GameObject sender, EventArgs args)
-        {
-            if (sender.Position.Distance(ObjectManager.Player.Position) < 800)
-                Game.PrintChat(sender.Name);
-        }
+        //void GameObject_OnCreate(GameObject sender, EventArgs args)
+        //{
+        //    if (sender.Position.Distance(ObjectManager.Player.Position) < 800)
+        //        Game.PrintChat(sender.Name);
+        //}
 
         private void Drawing_OnEndScene(EventArgs args)
         {

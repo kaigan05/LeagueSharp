@@ -9,10 +9,10 @@ namespace KaiHelper.Tracker
 {
     public class Time
     {
-        public bool CalledInvisible = false;
-        public bool CalledVisible = false;
+        public bool CalledInvisible;
+        public bool CalledVisible;
         public int InvisibleTime;
-        public bool Pinged = false;
+        public bool Pinged;
         public int StartInvisibleTime;
         public int StartVisibleTime;
         public int VisibleTime;
@@ -39,7 +39,7 @@ namespace KaiHelper.Tracker
                 {
                     _enemies.Add(hero, new Time());
                 }
-                Game.OnGameUpdate += Game_OnGameUpdate;
+                Game.OnUpdate += Game_OnGameUpdate;
                 Drawing.OnDraw += Drawing_OnDraw;
             });
             

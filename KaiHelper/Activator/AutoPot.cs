@@ -4,11 +4,29 @@ using LeagueSharp.Common;
 
 namespace KaiHelper.Activator
 {
-    internal class AutoPot
+    class AutoPot
     {
-        private readonly Menu _menu;
-        private int _level;
+        class BarPot
+        {
+            public BarPot(float health, float mana = 0)
+            {
+                Health = health;
+                Mana = mana;
+                HealthPercent = Helper.GetPercent(Health, ObjectManager.Player.MaxHealth);
+                ManaPercent = Helper.GetPercent(Mana, ObjectManager.Player.MaxMana);
+            }
 
+            private float Health { get; set; }
+            private float Mana { get; set; }
+
+            public float HealthPercent { get; private set; }
+            public float ManaPercent { get; private set; }
+
+            public static BarPot operator +(BarPot a, BarPot b)
+            {
+                return new BarPot(a.Health + b.Health, a.Mana + b.Mana);
+            }
+        }
         public AutoPot(Menu menu)
         {
             _menu = menu.AddSubMenu(new Menu("Potion Manager", "PotionManager"));
@@ -16,120 +34,109 @@ namespace KaiHelper.Activator
             _menu.AddItem(new MenuItem("HealthPotion", "Health Potion").SetValue(true));
             _menu.AddItem(new MenuItem("MPTrigger", "MP Trigger Percent").SetValue(new Slider(30)));
             _menu.AddItem(new MenuItem("ManaPotion", "Mana Potion").SetValue(true));
+            _healthPotion = new Potion(ItemId.Health_Potion);
+            _manaPotion = new Potion(ItemId.Mana_Potion);
+            _biscuitPotion = new Potion((ItemId)2010);
+            _flaskPotion = new Potion((ItemId)2041);
             MenuItem autoarrangeMenu = _menu.AddItem(new MenuItem("AutoArrange", "Auto Arrange").SetValue(false));
-            autoarrangeMenu.ValueChanged += AutoRangeValueChanged;
-
-            Game.OnGameUpdate += Game_OnGameUpdate;
-        }
-
-        private void SetMana()
-        {
-            _menu.Item("HPTrigger")
-                .SetValue(new Slider(FomularPercent((int) ObjectManager.Player.MaxHealth, 150), 1, 99));
-            if (ObjectManager.Player.MaxMana <= 0)
+            autoarrangeMenu.ValueChanged += (sender, e) =>
             {
-                _menu.Item("ManaPotion").SetValue(false);
-            }
-            else
-            {
-                _menu.Item("MPTrigger")
-                    .SetValue(new Slider(FomularPercent((int) ObjectManager.Player.MaxMana, 100), 1, 99));
-            }
+                if (e.GetNewValue<bool>())
+                {
+                    ResetTrigger();
+                }
+            };
+            Game.OnUpdate += Game_OnGameUpdate;
+            Champion.OnLevelUp += OnLevelUp;
         }
-
-        private void AutoRangeValueChanged(object sender, OnValueChangeEventArgs e)
-        {
-            if (!e.GetNewValue<bool>())
-            {
-                SetMana();
-            }
-        }
-
-        private int FomularPercent(int max, int cur)
-        {
-            return (int) (100 - ((cur * 1.0) / max) * 100);
-        }
-
-        private void Game_OnGameUpdate(EventArgs args)
+        private void OnLevelUp(Obj_AI_Hero champion, Champion.OnLevelUpEventAgrs agrs)
         {
             if (_menu.Item("AutoArrange").GetValue<bool>())
             {
-                int level = ObjectManager.Player.Level;
-                if (level > _level)
-                {
-                    _level = level;
-                    SetMana();
-                }
-            }
-            if (!ObjectManager.Player.IsDead && !ObjectManager.Player.InFountain() &&
-                !ObjectManager.Player.HasBuff("Recall"))
-            {
-                bool hasItemCrystalFlask = Items.HasItem(2041);
-                bool buffItemCrystalFlask = false;
-                if (_menu.Item("HealthPotion").GetValue<bool>())
-                {
-                    bool hasItemMiniRegenPotion = Items.HasItem(2010);
-                    bool hasHealthPotion = Items.HasItem(2003);
-                    if (ObjectManager.Player.HealthPercentage() <= _menu.Item("HPTrigger").GetValue<Slider>().Value)
-                    {
-                        if (hasItemCrystalFlask)
-                        {
-                            if (ObjectManager.Player.ManaPercentage() <=
-                                _menu.Item("MPTrigger").GetValue<Slider>().Value ||
-                                !hasHealthPotion && !hasItemMiniRegenPotion)
-                            {
-                                UseItem(2041, "ItemCrystalFlask");
-                                buffItemCrystalFlask = true;
-                            }
-                            else if (hasHealthPotion)
-                            {
-                                UseItem(2003, "Health Potion");
-                            }
-                            else
-                            {
-                                UseItem(2010, "ItemMiniRegenPotion");
-                            }
-                        }
-                        else if (hasHealthPotion)
-                        {
-                            UseItem(2003, "Health Potion");
-                        }
-                        else if (hasItemMiniRegenPotion)
-                        {
-                            UseItem(2010, "ItemMiniRegenPotion");
-                        }
-                    }
-                }
-                if (buffItemCrystalFlask)
-                {
-                    return;
-                }
-                if (!_menu.Item("ManaPotion").GetValue<bool>())
-                {
-                    return;
-                }
-                if (!(ObjectManager.Player.ManaPercentage() <= _menu.Item("MPTrigger").GetValue<Slider>().Value))
-                {
-                    return;
-                }
-                bool hasManaPotion = Items.HasItem(2004);
-                if (hasManaPotion)
-                {
-                    UseItem(2004, "Mana Potion");
-                }
-                else if (hasItemCrystalFlask)
-                {
-                    UseItem(2041, "ItemCrystalFlask");
-                }
+                ResetTrigger();
             }
         }
 
-        private static void UseItem(int id, string displayName)
+        private void ResetTrigger()
         {
-            if (!ObjectManager.Player.HasBuff(displayName))
+            HpTrigger = 100 - _healthPotion.HitHealthPercent;
+            if (ObjectManager.Player.MaxMana <= 0)
             {
-                Items.UseItem(id);
+                ManaCheck = false;
+                ManaTrigger = 0;
             }
+            else
+            {
+                ManaTrigger = 100 - _manaPotion.HitManaPercent;
+            }
+        }
+
+
+        private void Game_OnGameUpdate(EventArgs args)
+        {
+            if (!ObjectManager.Player.IsDead && !ObjectManager.Player.InFountain() && !ObjectManager.Player.HasBuff("Recall"))
+            {
+                BarPot lastBar = new BarPot(ObjectManager.Player.PredictedHealth(_healthPotion.ProcessTime), ObjectManager.Player.PredictedMana(_manaPotion.ProcessTime));
+                bool hasEnemy = Utility.CountEnemiesInRange(800) > 0;
+                if (HealthCheck && ((lastBar.HealthPercent <= HpTrigger && hasEnemy || (lastBar.HealthPercent < 50))))
+                {
+                    if ((lastBar.ManaPercent <= ManaTrigger && hasEnemy || lastBar.ManaPercent < 50) && _flaskPotion.IsReady())
+                    {
+                        _flaskPotion.Cast();
+                        return;
+                    }
+                    if (_healthPotion.IsReady())
+                    {
+                        _healthPotion.Cast();
+                    }
+                    else if (_biscuitPotion.IsReady())
+                    {
+                        _biscuitPotion.Cast();
+                    }
+                    else if (_flaskPotion.IsReady())
+                    {
+                        _flaskPotion.Cast();
+                        return;
+                    }
+                }
+                if (ManaCheck && (lastBar.ManaPercent <= ManaTrigger && hasEnemy || lastBar.ManaPercent < 50))
+                {
+                    if (_manaPotion.IsReady())
+                    {
+                        _manaPotion.Cast();
+                    }
+                    else if (_flaskPotion.IsReady())
+                    {
+                        _flaskPotion.Cast();
+                    }
+                }
+            }
+        }
+        private readonly Menu _menu;
+        private readonly Potion _healthPotion;
+        private readonly Potion _manaPotion;
+        private readonly Potion _biscuitPotion;
+        private readonly Potion _flaskPotion;
+
+        public int HpTrigger
+        {
+            get { return _menu.Item("HPTrigger").GetValue<Slider>().Value; }
+            set { _menu.Item("HPTrigger").SetValue(new Slider(value)); }
+        }
+        public int ManaTrigger
+        {
+            get { return _menu.Item("MPTrigger").GetValue<Slider>().Value; }
+            set { _menu.Item("MPTrigger").SetValue(new Slider(value)); }
+        }
+        public bool HealthCheck
+        {
+            get { return _menu.Item("HealthPotion").GetValue<bool>(); }
+            set { _menu.Item("HealthPotion").SetValue(value); }
+        }
+        public bool ManaCheck
+        {
+            get { return _menu.Item("ManaPotion").GetValue<bool>(); }
+            set { _menu.Item("ManaPotion").SetValue(value); }
         }
     }
 }

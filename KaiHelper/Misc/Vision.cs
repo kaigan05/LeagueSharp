@@ -21,7 +21,7 @@ namespace KaiHelper.Misc
             _menu.AddItem(new MenuItem("VongTron", "Only Circle").SetValue(false));
             _menu.AddItem(new MenuItem("NguoiChoiTest", "Test by me").SetValue(false));
             _menu.AddItem(new MenuItem("Active", "Active").SetValue(false));
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
             Drawing.OnDraw += Game_OnDraw;
         }
 

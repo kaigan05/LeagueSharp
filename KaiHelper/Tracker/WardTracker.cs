@@ -17,7 +17,8 @@ namespace KaiHelper.Tracker
         Pink,
         Trap,
     }
-    internal class Ward
+
+    public class Ward
     {
         private Render.Circle _circle;
         private Render.Sprite _minimapSprite;
@@ -193,7 +194,7 @@ namespace KaiHelper.Tracker
 
     public class WardDetector
     {
-        private readonly List<Ward> _detectedWards = new List<Ward>();
+        public readonly List<Ward> DetectedWards = new List<Ward>();
         public static Menu MenuWard;
         public WardDetector(Menu config)
         {
@@ -205,7 +206,7 @@ namespace KaiHelper.Tracker
                 Game_OnCreate(obj, null);
             }
             GameObject.OnCreate += Game_OnCreate;
-            Game.OnGameUpdate += Game_OnGameUpdate;
+            Game.OnUpdate += Game_OnGameUpdate;
         }
 
         public static bool IsActive()
@@ -225,7 +226,7 @@ namespace KaiHelper.Tracker
                 return;
             }
             int startTime = Environment.TickCount - (int)((wardObject.MaxMana - wardObject.Mana) * 1000);
-            _detectedWards.Add(new Ward(wardObject.SkinName, startTime, wardObject));
+            DetectedWards.Add(new Ward(wardObject.SkinName, startTime, wardObject));
         }
 
         private void Game_OnGameUpdate(EventArgs args)
@@ -234,7 +235,7 @@ namespace KaiHelper.Tracker
             {
                 return;
             }
-            _detectedWards.RemoveAll(w => w.WardObject.IsDead && w.RemoveCircle());
+            DetectedWards.RemoveAll(w => w.WardObject.IsDead && w.RemoveCircle());
         }
     }
 }
