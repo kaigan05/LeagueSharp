@@ -23,6 +23,13 @@ namespace KaiHelper.Tracker
             Menu.AddItem(new MenuItem("Opacity", "Opacity").SetValue(new Slider(70)));
             Menu.AddItem(new MenuItem("TextSize", "Text Size").SetValue(new Slider(15, 1)));
             Menu.AddItem(new MenuItem("ALP", "Active").SetValue(true));
+            foreach (
+                Obj_AI_Hero champion in
+                    ObjectManager.Get<Obj_AI_Hero>().Where(champion => champion.Team != ObjectManager.Player.Team))
+            {
+                Console.WriteLine(champion.ChampionName);
+                //_championsTracker.Add(new ChampionTracker(champion));
+            }
             CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
             Obj_AI_Base.OnTeleport += ObjAiBaseOnOnTeleport;
             Game.OnUpdate += Game_OnGameUpdate;
@@ -111,9 +118,8 @@ namespace KaiHelper.Tracker
                 var sprite =
                     new Render.Sprite(
                         Helper.ChangeOpacity(
-                            Helper.CropCircleImage(
                                 ResourceImages.GetChampionSquare(champion.SkinName) ??
-                                ResourceImages.GetChampionSquare("Aatrox")), Opacity), new Vector2(0, 0));
+                                ResourceImages.GetChampionSquare("Aatrox"), Opacity),new Vector2(0,0));
                 sprite.GrayScale();
                 sprite.Scale = new Vector2(Scale, Scale);
                 sprite.VisibleCondition = sender => TrackerCondition;
@@ -129,8 +135,14 @@ namespace KaiHelper.Tracker
                     Centered = true
                 };
                 Text.Add(0);
+                AppDomain.CurrentDomain.DomainUnload += CurrentDomainOnDomainUnload;
+                AppDomain.CurrentDomain.ProcessExit += CurrentDomainOnDomainUnload;
             }
-
+            private void CurrentDomainOnDomainUnload(object sender, EventArgs eventArgs)
+            {
+                Text.Remove();
+                Text.Dispose();
+            }
             public Obj_AI_Hero Champion { get; private set; }
 
             private bool TrackerCondition
