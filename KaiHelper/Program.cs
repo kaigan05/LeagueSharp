@@ -20,7 +20,7 @@ namespace KaiHelper
             new SkillBar(MainMenu);
             new JungleTimer(MainMenu);
             new GankDetector(MainMenu);
-            //new LastPosition(MainMenu);
+            new LastPosition(MainMenu);
             new WayPoint(MainMenu);
             new WardDetector(MainMenu);
             new HealthTurret(MainMenu);
